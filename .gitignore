@@ -1,0 +1,34 @@
+# Build output
+build/
+dist/
+*.bin
+*.elf
+*.map
+sdkconfig
+sdkconfig.old
+
+# Arduino
+*.hex
+*.with_bootloader.bin
+
+# Secrets and local config
+.env
+secrets.yaml
+*.key
+*.pem
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# 3D printing
+*.gcode
+*.3mf
+
+# Python
+__pycache__/
+*.pyc
+.venv/

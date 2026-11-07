@@ -42,6 +42,7 @@ This repository documents the whole journey: parts, wiring, firmware,
 - [Shopping list for Spain](docs/03-shopping-list.md)
 - [Tools and safety](docs/04-tools-and-safety.md)
 - [Bench test, step by step](docs/05-bench-test.md)
+- [3D prototype viewer](viewer/README.md)
 - [Final low-power firmware](docs/06-final-firmware.md)
 - [Home Assistant setup](docs/07-home-assistant.md)
 - [Battery and power](docs/08-battery.md)
@@ -49,6 +50,7 @@ This repository documents the whole journey: parts, wiring, firmware,
 - [Optional custom PCB](docs/10-optional-pcb.md)
 - [Outdoor test plan](docs/11-outdoor-test.md)
 - [Troubleshooting](docs/12-troubleshooting.md)
+- [3D prototype notes](docs/13-3d-prototype.md)
 
 ## Glossary
 

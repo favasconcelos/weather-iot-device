@@ -7,6 +7,10 @@ dist/
 sdkconfig
 sdkconfig.old
 
+# Node
+node_modules/
+.vite/
+
 # Arduino
 *.hex
 *.with_bootloader.bin

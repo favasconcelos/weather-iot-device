@@ -28,6 +28,15 @@ Inspected the existing Home Assistant setup on the Raspberry Pi:
 The Matter Server works for Wi-Fi devices, but it cannot talk to a Thread
 device yet. We need a **Thread border router**.
 
+### What we built
+
+- An interactive Three.js viewer in `viewer/` with four views: Assembled,
+  Exploded, Wiring, and Print parts.
+- The viewer models the XIAO, SHT40, 18650, box, lid, shield, LED, reed
+  switch, magnet, and colour-coded wires.
+- It includes clickable parts, a connection highlighter, an assembly order,
+  and a fanned-out view of the printed shield.
+
 ### Decisions
 
 | Topic | Decision |
@@ -57,10 +66,11 @@ device yet. We need a **Thread border router**.
 
 ### Next actions
 
-1. Order the bench kit (XIAO ESP32-C6, SHT40 breakout, breadboard, wires, USB-C cable).
-2. Buy or borrow a Thread border router.
-3. Build the bench test and commission the sensor into Home Assistant.
-4. Order the outdoor kit after the bench test works.
+1. Open the 3D viewer in `viewer/` and click through the four views.
+2. Order the bench kit (XIAO ESP32-C6, SHT40 breakout, breadboard, wires, USB-C cable).
+3. Buy or borrow a Thread border router.
+4. Build the bench test and commission the sensor into Home Assistant.
+5. Order the outdoor kit after the bench test works.
 
 ---
 

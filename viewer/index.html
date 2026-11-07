@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Interactive 3D prototype of the garden weather sensor: parts, wiring, enclosure, and assembly order."
+    />
+    <title>Garden Weather Sensor - 3D prototype</title>
+  </head>
+  <body>
+    <div id="app">
+      <aside id="panel">
+        <header class="panel-header">
+          <p class="eyebrow">Matter over Thread · outdoor prototype</p>
+          <h1>Garden Weather Sensor</h1>
+          <p class="lede">
+            Rotate, zoom, and click a part. Dimensions are approximate and in
+            millimetres.
+          </p>
+        </header>
+
+        <div class="mode-row" role="group" aria-label="View mode">
+          <button data-mode="assembled" class="active">Assembled</button>
+          <button data-mode="exploded">Exploded</button>
+          <button data-mode="wiring">Wiring</button>
+          <button data-mode="print">Print parts</button>
+        </div>
+
+        <section class="panel-section">
+          <h2>View</h2>
+          <div class="check-grid">
+            <label><input type="checkbox" id="toggle-shield" checked /> Radiation shield</label>
+            <label><input type="checkbox" id="toggle-lid" checked /> Lid</label>
+            <label><input type="checkbox" id="toggle-wires" checked /> Wires</label>
+            <label><input type="checkbox" id="toggle-labels" /> Labels</label>
+            <label><input type="checkbox" id="toggle-dimensions" /> Dimensions</label>
+          </div>
+          <label class="slider-row">
+            <span>Explode</span>
+            <input type="range" id="explode" min="0" max="1" step="0.01" value="0" />
+            <output id="explode-value">0%</output>
+          </label>
+        </section>
+
+        <section class="panel-section">
+          <h2>Parts</h2>
+          <ul id="part-list" class="list"></ul>
+        </section>
+
+        <section class="panel-section">
+          <h2>Connections</h2>
+          <ul id="connection-list" class="list connections"></ul>
+        </section>
+
+        <section class="panel-section">
+          <h2>Assembly order</h2>
+          <ol id="step-list" class="steps"></ol>
+        </section>
+
+        <footer class="panel-footer">
+          <p>Drag to rotate · scroll to zoom · right-drag to pan</p>
+          <p class="muted">
+            The final device uses the same parts, but the firmware switches
+            from Wi-Fi to Thread and the battery replaces USB power.
+          </p>
+        </footer>
+      </aside>
+
+      <div id="topbar">
+        <button id="reset-view" type="button">Reset view</button>
+        <button id="panel-toggle" type="button" aria-expanded="true">Panel</button>
+      </div>
+
+      <div id="legend" aria-label="Wire colour legend">
+        <span><i class="chip chip-red"></i>3V3</span>
+        <span><i class="chip chip-black"></i>GND</span>
+        <span><i class="chip chip-blue"></i>SDA</span>
+        <span><i class="chip chip-yellow"></i>SCL</span>
+        <span><i class="chip chip-green"></i>LED</span>
+        <span><i class="chip chip-purple"></i>Reed</span>
+      </div>
+
+      <div id="part-card" class="hidden" aria-live="polite">
+        <p id="part-card-kind" class="eyebrow">Selected</p>
+        <h3 id="part-card-title"></h3>
+        <p id="part-card-body"></p>
+      </div>
+
+      <div id="loading">Building the 3D prototype…</div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

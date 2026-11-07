@@ -32,7 +32,16 @@ export interface Connection {
   detail: string;
   color: number;
   css: string;
-  group: 'sensor' | 'battery' | 'led' | 'reed' | 'divider';
+  group:
+    | 'sensor-3v3'
+    | 'sensor-gnd'
+    | 'sensor-sda'
+    | 'sensor-scl'
+    | 'battery-positive'
+    | 'battery-negative'
+    | 'led-signal'
+    | 'reed-signal'
+    | 'battery-divider';
   partIds: PartId[];
 }
 

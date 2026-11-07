@@ -1,5 +1,5 @@
 /*
- * Garden Weather Sensor - bench test
+ * Window Weather Sensor - bench test
  *
  * Hardware:
  *   Seeed XIAO ESP32-C6
@@ -16,7 +16,7 @@
  *   - temperature + humidity endpoints
  *   - one reading every 5 seconds
  *
- * The final outdoor firmware uses Thread and deep sleep instead.
+ * The final outdoor firmware uses Thread and reports every 1-2 hours.
  */
 
 #include <Arduino.h>
@@ -47,7 +47,7 @@ void setup()
   Serial.begin(115200);
   delay(1500);
   Serial.println();
-  Serial.println("Garden sensor bench test");
+  Serial.println("Window sensor bench test");
 
   Wire.begin(I2C_SDA, I2C_SCL);
 
@@ -70,9 +70,9 @@ void setup()
   humiditySensor.begin(0.0);
 
   /* Optional identity. Safe before Matter.begin(). */
-  Matter.setDeviceName("Garden Sensor");
+  Matter.setDeviceName("Window Sensor");
   Matter.setVendorName("DIY");
-  Matter.setProductName("Garden Weather Sensor");
+  Matter.setProductName("Window Weather Sensor");
 
   Matter.begin();
 

@@ -1,12 +1,12 @@
-# Outdoor enclosure
+# Window enclosure
 
 ## Goal
 
-Keep the electronics dry, let the sensor breathe, and stop the sun from
-making the temperature read too high.
+Keep the electronics dry, let the sensor breathe, and stop the sun and the
+window from making the temperature read too high.
 
-The sun is the biggest problem. A sensor in direct sun can read 5-10 °C too
-high. A white louvered shield is not optional.
+The device sits outdoors on the office window. It has no mains power, so the
+box also has to be easy to take inside once a year for charging.
 
 ## Version 1: IP65 box + printed sun shield
 
@@ -23,7 +23,7 @@ high. A white louvered shield is not optional.
         |   +---------------------+   |
         |                             |
         +-----------------------------+
-                 mounting bracket
+              window-frame clamp
 ```
 
 - **Electronics box:** white IP65 ABS/ASA box, about 100 × 68 × 50 mm.
@@ -33,7 +33,26 @@ high. A white louvered shield is not optional.
 - **Desiccant:** 1-2 silica gel packs inside.
 - **Status LED:** light pipe or clear epoxy window.
 - **Magnet switch:** reed switch inside, magnet from outside.
-- **Mounting:** pole or fence bracket, 1.5-2 m above ground.
+- **Mounting:** removable window-frame clamp or bracket, outside the glass,
+  10-15 cm away from the wall and glass.
+
+## Window placement
+
+The office window is the hardest part of the installation. A sensor close to
+glass or a wall reads the temperature of the building, not the outside air.
+
+- Mount it **outside the glass**, not between the glass and the blind.
+- Keep it **10-15 cm away** from the wall and the glass.
+- Shade it from direct sun. A north-facing window is easiest; otherwise use
+  the printed shield and a spot that is shaded for most of the day.
+- Do not put it above a radiator, air-conditioner outlet, or heat vent.
+- Make sure air can flow through the shield from all sides.
+- Use a **removable clamp** on the window frame if you rent or do not want to
+  drill. A small bracket with stainless screws is fine on a wooden frame.
+- Leave enough slack to lift the device inside for charging.
+
+A window that faces the afternoon sun can be 10-20 °C hotter than the air
+around it. The shield helps, but placement matters more.
 
 ## Why a separate sun shield?
 
@@ -44,9 +63,9 @@ A sealed box in the sun becomes an oven. The shield:
 - keeps rain off
 - reduces the temperature bias
 
-The shield is a stack of white plates with gaps. The top plate is solid;
-the lower plates have a central opening for the box; the sides are open.
-This is the same idea as a professional weather station's radiation shield.
+The shield is a stack of white plates with gaps. The top plate is solid; the
+lower plates have a central opening for the box; the sides are open. This is
+the same idea as a professional weather station's radiation shield.
 
 ## Box size
 
@@ -144,16 +163,17 @@ box. The design is parametric: plate count, gap, and box size can change.
 11. **Waterproof test.** Put a paper towel inside (no electronics), close
     the box, and leave it in the rain or run it under a gentle shower for
     10 minutes. Open it and check the paper. Repeat until dry.
-12. **Mount.** Cable entry down, drip loop, shield over the box, 1.5-2 m
-    above ground, away from walls.
+12. **Mount.** Clamp the shield to the window frame, outside the glass,
+    10-15 cm from the wall. Keep the cable entry down, with a drip loop.
 
 ## Mounting
 
-- Use a pole or fence bracket. A 3D-printed bracket is fine, but stainless
-  screws and a UV-resistant material are better outdoors.
+- Use a window-frame clamp or a small bracket. A 3D-printed bracket is fine,
+  but stainless screws and a UV-resistant material are better outdoors.
 - Keep the XIAO's antenna away from metal. The antenna is at the end of the
   board; orient it toward the outside of the box.
-- Do not wrap the box in metal tape or mount it against a metal pole.
+- Do not wrap the box in metal tape or mount it against a metal frame.
+- Do not trap the box between the glass and a closed blind.
 - If the Thread signal is weak, move the border router closer, add a
   mains-powered Thread router, or consider an external antenna.
 
@@ -161,12 +181,13 @@ box. The design is parametric: plate count, gap, and box size can change.
 
 Once a year:
 
+- Unclamp the device and bring it inside.
 - Open the box and check for water or condensation.
 - Replace the desiccant.
 - Inspect the gasket; replace it if it is stiff or cracked.
 - Clean dust and leaves from the shield.
 - Charge or replace the battery.
-- Check the screws and the mounting bracket.
+- Check the screws and the window clamp.
 
 ## What can go wrong
 
@@ -174,7 +195,8 @@ Once a year:
 |---|---|---|
 | Water inside | Bad gasket, cable entry, or vent | Dry it, replace the gasket, add silicone, re-test |
 | Condensation | Sealed air with moisture | Gore vent, fresh desiccant, conformal coating |
-| Temperature too high | Sun, or heat from the XIAO | Better shield, sensor lower, air gap, white box |
+| Temperature too high | Sun, window heat, or the XIAO | Better shield, move it away from the glass, sensor lower, air gap, white box |
+| Temperature swings with the sun | Radiant heat from the window/wall | Move it 10-15 cm out, add a shield plate, choose a shaded window |
 | Humidity stuck at 100 % | Water on the sensor | Dry the sensor, check the membrane, add a drip shield |
 | LED not visible | No light pipe, or LED off | Use the magnet status, or add a light pipe |
 | Weak signal | Metal nearby, distance, interference | Move the border router, add a Thread router, external antenna |

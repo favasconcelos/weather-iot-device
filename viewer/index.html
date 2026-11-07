@@ -2,93 +2,205 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta
       name="description"
-      content="Interactive 3D prototype of the garden weather sensor: parts, wiring, enclosure, and assembly order."
+      content="Interactive 3D prototype of the office-window weather sensor: parts, wiring, enclosure, and assembly order."
     />
-    <title>Garden Weather Sensor - 3D prototype</title>
+    <meta name="theme-color" content="#f6f3ec" />
+    <title>Window Weather Sensor — 3D assembly viewer</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%23f6f3ec'/%3E%3Cg fill='none' stroke='%23b5401a' stroke-width='1.5' stroke-linejoin='round'%3E%3Cpath d='M4 8.5 12 4l8 4.5-8 4.5-8-4.5Z'/%3E%3Cpath d='m4 12.5 8 4.5 8-4.5'/%3E%3Cpath d='m4 16.5 8 4.5 8-4.5'/%3E%3C/g%3E%3C/svg%3E"
+    />
   </head>
   <body>
     <div id="app">
-      <aside id="panel">
-        <header class="panel-header">
-          <p class="eyebrow">Matter over Thread · outdoor prototype</p>
-          <h1>Garden Weather Sensor</h1>
-          <p class="lede">
-            Rotate, zoom, and click a part. Dimensions are approximate and in
-            millimetres.
-          </p>
-        </header>
-
-        <div class="mode-row" role="group" aria-label="View mode">
-          <button data-mode="assembled" class="active">Assembled</button>
-          <button data-mode="exploded">Exploded</button>
-          <button data-mode="wiring">Wiring</button>
-          <button data-mode="print">Print parts</button>
+      <header id="topbar">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round">
+              <path d="M4 8.5 12 4l8 4.5-8 4.5-8-4.5Z" />
+              <path d="m4 12.5 8 4.5 8-4.5" />
+              <path d="m4 16.5 8 4.5 8-4.5" />
+            </svg>
+          </span>
+          <h1>Window Weather Sensor</h1>
+          <span class="brand-meta">Matter over Thread</span>
         </div>
 
-        <section class="panel-section">
-          <h2>View</h2>
-          <div class="check-grid">
-            <label><input type="checkbox" id="toggle-shield" checked /> Radiation shield</label>
-            <label><input type="checkbox" id="toggle-lid" checked /> Lid</label>
-            <label><input type="checkbox" id="toggle-wires" checked /> Wires</label>
-            <label><input type="checkbox" id="toggle-labels" /> Labels</label>
-            <label><input type="checkbox" id="toggle-dimensions" /> Dimensions</label>
+        <div class="topbar-actions">
+          <span class="topbar-note">Window prototype</span>
+          <button id="reset-view" class="btn btn--secondary" type="button">Reset view</button>
+          <button
+            id="panel-toggle"
+            class="btn btn--secondary"
+            type="button"
+            aria-expanded="false"
+            aria-controls="panel"
+          >
+            Details
+          </button>
+        </div>
+      </header>
+
+      <main id="workspace">
+        <section id="stage" aria-label="3D model of the office-window weather sensor">
+          <div class="mode-row" role="group" aria-label="View mode">
+            <button type="button" data-mode="assembled" class="active" aria-pressed="true">Assembled</button>
+            <button type="button" data-mode="exploded" aria-pressed="false">Exploded</button>
+            <button type="button" data-mode="wiring" aria-pressed="false">Wiring</button>
+            <button type="button" data-mode="print" aria-pressed="false">Printed shield</button>
           </div>
-          <label class="slider-row">
-            <span>Explode</span>
-            <input type="range" id="explode" min="0" max="1" step="0.01" value="0" />
-            <output id="explode-value">0%</output>
-          </label>
+
+          <div id="loading" role="status">Loading the model…</div>
+
+          <div id="explode-dock">
+            <label for="explode">Explode</label>
+            <input id="explode" type="range" min="0" max="1" step="0.01" value="0" />
+            <output id="explode-value" for="explode">0%</output>
+            <button
+              id="dock-reset"
+              class="icon-btn"
+              type="button"
+              aria-label="Reset view"
+              title="Reset view"
+            >
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3.2 6.4A5 5 0 1 1 3 9.3" />
+                <path d="M3 3.5v3.2h3.2" />
+              </svg>
+            </button>
+          </div>
+
+          <div id="part-card" hidden aria-live="polite">
+            <div class="part-card-head">
+              <p id="part-card-kind" class="inspector-kind">Selected</p>
+              <button id="part-card-close" class="icon-btn" type="button" aria-label="Clear selection">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+                  <path d="m4 4 8 8M12 4l-8 8" />
+                </svg>
+              </button>
+            </div>
+            <h3 id="part-card-title"></h3>
+            <p id="part-card-body"></p>
+          </div>
         </section>
 
-        <section class="panel-section">
-          <h2>Parts</h2>
-          <ul id="part-list" class="list"></ul>
-        </section>
+        <aside id="panel" aria-label="Model details">
+          <section id="inspector" aria-live="polite">
+            <p id="inspector-kind" class="inspector-kind">Overview</p>
+            <div class="inspector-head">
+              <h2 id="inspector-title">Temperature and humidity</h2>
+              <button id="inspector-clear" class="icon-btn" type="button" aria-label="Clear selection" hidden>
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+                  <path d="m4 4 8 8M12 4l-8 8" />
+                </svg>
+              </button>
+            </div>
+            <p id="inspector-body">
+              A battery-powered sensor for the office window. It reports to Home Assistant over Matter and Thread;
+              a six-plate shield keeps sun and heat off the SHT40.
+            </p>
+            <p id="inspector-meta" class="inspector-meta">Approx. 150 × 110 × 80 mm shield</p>
+          </section>
 
-        <section class="panel-section">
-          <h2>Connections</h2>
-          <ul id="connection-list" class="list connections"></ul>
-        </section>
+          <div class="show-row" role="group" aria-label="Show in model">
+            <button type="button" class="toggle" data-toggle="shield" aria-pressed="true">Shield</button>
+            <button type="button" class="toggle" data-toggle="lid" aria-pressed="true">Lid</button>
+            <button type="button" class="toggle" data-toggle="wires" aria-pressed="true">Wires</button>
+            <button type="button" class="toggle" data-toggle="labels" aria-pressed="false">Labels</button>
+            <button
+              type="button"
+              class="toggle"
+              data-toggle="dimensions"
+              aria-pressed="false"
+              aria-label="Dimensions"
+              title="Dimensions"
+            >
+              Dims
+            </button>
+          </div>
 
-        <section class="panel-section">
-          <h2>Assembly order</h2>
-          <ol id="step-list" class="steps"></ol>
-        </section>
+          <div class="panel-tabs" role="tablist" aria-label="Model information">
+            <button
+              type="button"
+              role="tab"
+              id="tab-parts"
+              data-tab="parts"
+              aria-controls="panel-parts"
+              aria-selected="true"
+            >
+              Parts <span class="tab-count" id="parts-count"></span>
+            </button>
+            <button
+              type="button"
+              role="tab"
+              id="tab-wiring"
+              data-tab="wiring"
+              aria-controls="panel-wiring"
+              aria-selected="false"
+              tabindex="-1"
+            >
+              Wiring <span class="tab-count" id="wiring-count"></span>
+            </button>
+            <button
+              type="button"
+              role="tab"
+              id="tab-steps"
+              data-tab="steps"
+              aria-controls="panel-steps"
+              aria-selected="false"
+              tabindex="-1"
+            >
+              Assembly <span class="tab-count" id="steps-count"></span>
+            </button>
+          </div>
 
-        <footer class="panel-footer">
-          <p>Drag to rotate · scroll to zoom · right-drag to pan</p>
-          <p class="muted">
-            The final device uses the same parts, but the firmware switches
-            from Wi-Fi to Thread and the battery replaces USB power.
-          </p>
-        </footer>
-      </aside>
+          <div class="panel-scroll">
+            <section role="tabpanel" id="panel-parts" aria-labelledby="tab-parts" data-panel="parts">
+              <ol id="part-list" class="list part-list"></ol>
+            </section>
+            <section
+              role="tabpanel"
+              id="panel-wiring"
+              aria-labelledby="tab-wiring"
+              data-panel="wiring"
+              hidden
+            >
+              <p class="panel-note">Click a connection to isolate its wires.</p>
+              <ul id="connection-list" class="list connection-list"></ul>
+            </section>
+            <section role="tabpanel" id="panel-steps" aria-labelledby="tab-steps" data-panel="steps" hidden>
+              <p class="panel-note">Click a step to move the camera and show the parts.</p>
+              <ol id="step-list" class="list step-list"></ol>
+            </section>
+          </div>
 
-      <div id="topbar">
-        <button id="reset-view" type="button">Reset view</button>
-        <button id="panel-toggle" type="button" aria-expanded="true">Panel</button>
-      </div>
+          <section class="panel-spec" aria-labelledby="sensor-heading">
+            <div class="spec-head">
+              <h3 class="spec-heading" id="sensor-heading">Sensor</h3>
+              <span class="spec-chip">SHT40 · I²C 0x44</span>
+            </div>
+            <div class="spec-grid">
+              <div class="spec">
+                <span class="spec-label">Temperature</span>
+                <span class="spec-value">−40…125 °C</span>
+                <span class="spec-accuracy">±0.2 °C</span>
+                <span class="rail rail--temp" aria-hidden="true"></span>
+              </div>
+              <div class="spec">
+                <span class="spec-label">Humidity</span>
+                <span class="spec-value">0…100 %RH</span>
+                <span class="spec-accuracy">±1.8 %RH</span>
+                <span class="rail rail--rh" aria-hidden="true"></span>
+              </div>
+            </div>
+          </section>
+        </aside>
 
-      <div id="legend" aria-label="Wire colour legend">
-        <span><i class="chip chip-red"></i>3V3</span>
-        <span><i class="chip chip-black"></i>GND</span>
-        <span><i class="chip chip-blue"></i>SDA</span>
-        <span><i class="chip chip-yellow"></i>SCL</span>
-        <span><i class="chip chip-green"></i>LED</span>
-        <span><i class="chip chip-purple"></i>Reed</span>
-      </div>
-
-      <div id="part-card" class="hidden" aria-live="polite">
-        <p id="part-card-kind" class="eyebrow">Selected</p>
-        <h3 id="part-card-title"></h3>
-        <p id="part-card-body"></p>
-      </div>
-
-      <div id="loading">Building the 3D prototype…</div>
+        <div id="panel-scrim" hidden></div>
+      </main>
     </div>
 
     <script type="module" src="/src/main.ts"></script>

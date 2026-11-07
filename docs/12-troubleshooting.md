@@ -86,9 +86,47 @@ Google's Matter setup may reject an uncertified device. Options:
 ### "This device requires a border router"
 
 - You need a Thread border router. A Matter Server alone is not enough.
-- Set up a Google Nest Hub 2, Google TV Streamer, or another known-working
-  border router.
-- In Home Assistant, check **Settings > Connectivity > Thread**.
+- The chosen setup is a **ZBT-2** plus the **OpenThread Border Router**
+  container on the Pi. See
+  [the border router guide](14-thread-border-router.md).
+- In Home Assistant, check **Settings > Devices & services > Thread**.
+- If the Thread integration is empty, no border router has been discovered
+  yet.
+
+### OTBR container does not start
+
+Check the logs first:
+
+```bash
+docker logs otbr --tail 100
+```
+
+Common causes:
+
+- The USB device path is wrong. Use the stable path:
+  `ls -l /dev/serial/by-id/`.
+- The user is not in the `dialout` group. Run
+  `sudo usermod -aG dialout $USER`, then log out and back in.
+- The ZBT-2 still has Zigbee firmware. Flash OpenThread RCP firmware.
+- The baud rate is wrong. Start with `460800` and check the firmware notes.
+- `BACKBONE_IF` is not the Pi's real LAN interface. Check `ip link show`.
+- Another container still claims the USB radio. Stop it.
+- The container is not privileged or does not have `NET_ADMIN`.
+
+Check the Thread state:
+
+```bash
+docker exec otbr ot-ctl state
+```
+
+### Thread integration shows no border router
+
+- Add the **OpenThread Border Router** integration with the OTBR REST URL:
+  `http://<pi-ip>:8081`.
+- Restart Home Assistant and check again; mDNS discovery can be slow.
+- Make sure OTBR and Home Assistant are on the same network model (both host
+  networking, or both macvlan). A mix can break discovery.
+- Check that port `8081` is reachable from the Home Assistant container.
 
 ### Thread credentials are missing
 
@@ -96,28 +134,53 @@ Google's Matter setup may reject an uncertified device. Options:
 - Go to **Settings > Companion app > Troubleshooting > Sync Thread credentials**
   (menu names move between versions).
 - Or **Settings > Connectivity > Thread > Send credentials to Home Assistant**.
-- Check that the Google network appears in Home Assistant and is preferred.
+- In Home Assistant, open the Thread integration and make the OTBR network
+  the **preferred network**.
+- Enable **Android/iOS commissioning** in the Thread integration.
 
 ### Device joins Thread but is unreachable
 
-- Check the Thread network map in Home Assistant.
-- Move the border router closer, or add a mains-powered Thread router.
-- Check the Matter Server's IPv6 route:
+Thread is IPv6-only. Check the host first:
 
-  ```bash
-  docker exec matter-server ip -6 route
-  ```
+```bash
+sysctl net.ipv6.conf.all.forwarding
+sysctl net.ipv6.conf.all.accept_ra_rt_info_max_plen
+ip -6 route show | grep fd
+```
 
-- The Matter Server is on a macvlan network. If it does not receive the
-  Thread route, we may need to add a static route or adjust the container.
-  This is a known area to debug.
+Expected:
+
+- IPv6 forwarding is `1`.
+- `accept_ra_rt_info_max_plen` is at least `64`.
+- There is an `fd.../64` route through the OTBR.
+
+Then check the Matter Server container:
+
+```bash
+docker exec matter-server ip -6 route
+docker exec matter-server ping6 -c 3 <thread-prefix>::1
+```
+
+Common causes:
+
+- `matter-server` is on macvlan and never learned the Thread route.
+- `matter-server` is on macvlan and Docker assigned a ULA address that the
+  kernel prefers. The source address is wrong, so replies never come back.
+- Home Assistant and `matter-server` are on different network models.
+- The router or firewall blocks IPv6 multicast or router advertisements.
+- The phone is on a different VLAN from the Pi.
+
+The simplest fix is host networking for Home Assistant, `matter-server`, and
+OTBR. If you keep macvlan, follow the ULA workaround in
+[the border router guide](14-thread-border-router.md).
 
 ### Device drops offline randomly
 
-- Weak signal. Move the border router or add a Thread router.
+- Weak signal. Move the border router or add a mains-powered Thread router.
 - Check for 2.4 GHz Wi-Fi interference; try Thread channel 25 or 26.
 - Check the battery voltage; a weak battery can cause resets.
 - Check the Matter Server logs for `NoAck` or `Timeout`.
+- Check the OTBR logs for repeated resets or radio errors.
 
 ---
 
@@ -126,12 +189,14 @@ Google's Matter setup may reject an uncertified device. Options:
 ### Battery life is much shorter than expected
 
 - Measure the sleep current.
-- Check the report interval (5 minutes is the target).
+- Check the report interval (1-2 hours is the target).
 - Check the signal strength; a weak link causes retries.
 - Check the LED; it should be off.
 - Check the battery divider; it should draw only a few µA.
-- Check the sensor breakout's regulator; some breakouts draw tens of µA.
-- If needed, report every 10-15 minutes instead of 5.
+- Check the SHT40 breakout's regulator; some breakouts draw tens of µA when
+  permanently powered. Power-gate the sensor or use a bare SHT40.
+- If needed, report every 2 hours instead of 1. Do not go below that without
+  accepting a slower response.
 
 ### The device resets when the radio transmits
 
@@ -157,7 +222,7 @@ Google's Matter setup may reject an uncertified device. Options:
 
 ---
 
-## Outdoor
+## Window and outdoor
 
 ### Water inside the box
 
@@ -175,11 +240,13 @@ Google's Matter setup may reject an uncertified device. Options:
 
 ### Temperature reads too high
 
-- The sensor is in the sun or too close to the XIAO/battery.
+- The sensor is in the sun, too close to the window/wall, or too close to the
+  XIAO/battery.
+- Move it 10-15 cm away from the glass and wall.
 - Improve the radiation shield; add more plates or a bigger air gap.
 - Move the sensor to the bottom of the box.
 - Use a white box and white shield.
-- Compare with a shaded reference at the same time.
+- Compare with a shaded reference at the same time, away from the window.
 
 ### Humidity reads 100 % all the time
 
@@ -208,10 +275,38 @@ docker restart matter-server
 
 ### Home Assistant cannot reach the Matter Server
 
-- Check the Matter Server IP (`192.168.1.239` in the current setup).
-- Check the HA Matter integration configuration.
-- Check that both containers are on the same macvlan network.
+- If you kept the current macvlan setup, the Matter Server URL is
+  `ws://192.168.1.239:5580/ws`. Check that Home Assistant and
+  `matter-server` are on the same macvlan network.
+- If you moved to host networking, the URL is
+  `ws://<pi-ip>:5580/ws` (find the Pi's IP with `hostname -I`).
+- Do not mix: Home Assistant on macvlan and `matter-server` on host networking
+  can fail because a macvlan container cannot reach its own host.
+- Check the Matter integration configuration in Home Assistant.
+- Restart both containers after a network change.
 - Do not change the network while devices are working.
+
+### After moving to host networking
+
+1. Confirm the Pi's LAN IP with `hostname -I`.
+2. Update the Matter integration URL to `ws://<pi-ip>:5580/ws`.
+3. Restart Home Assistant.
+4. Open the Matter integration and check that the Anker Solix is still
+   present.
+5. If the Anker device is missing, do not factory reset it. Check
+   `docker logs matter-server --tail 100`, verify the Pi can ping
+   `192.168.1.120`, and check that the host has no firewall rule blocking the
+   macvlan or LAN.
+
+### The Anker device disappeared after a network change
+
+- It is a Wi-Fi Matter device at `192.168.1.120`. It does not use Thread.
+- Check that the Pi can reach it:
+  `ping 192.168.1.120`.
+- Check the Matter Server logs.
+- Restore the `matter-server` backup if the controller data was damaged.
+- Do not factory reset the Anker unless the manufacturer's instructions say
+  so; re-commissioning a working device is unnecessary.
 
 ### Backups
 
@@ -223,7 +318,8 @@ sudo tar czf ~/matter-server-backup-$(date +%F).tar.gz \
   -C /home/azevefei/app-data matter-server
 ```
 
-Also back up the Home Assistant config directory.
+Also back up the Home Assistant config directory and the OTBR data volume.
+The OTBR data contains the Thread network credentials.
 
 ---
 

@@ -1,6 +1,6 @@
-# Garden Weather Sensor
+# Window Weather Sensor
 
-A small, battery-powered temperature and humidity sensor for the garden.
+A small, battery-powered temperature and humidity sensor for an office window.
 It reports to Home Assistant using **Matter over Thread**.
 
 This repository documents the whole journey: parts, wiring, firmware,
@@ -11,26 +11,33 @@ This repository documents the whole journey: parts, wiring, firmware,
 - [x] Decide the architecture
 - [x] Check the Home Assistant setup
 - [ ] Order the bench kit
-- [ ] Order a Thread border router
+- [ ] Order a Thread border router (ZBT-2)
 - [ ] Bench test over Wi-Fi
+- [ ] Set up the OpenThread Border Router
 - [ ] Low-power firmware
-- [ ] Outdoor enclosure
+- [ ] Window enclosure
 - [ ] 1-2 week outdoor test
 
 ## The short version
 
 1. A tiny board (Seeed XIAO ESP32-C6) reads a Sensirion SHT40 sensor.
-2. It sends temperature and humidity to Home Assistant.
+2. It sends temperature and humidity to Home Assistant every 1-2 hours.
 3. The final version uses Thread (low power) so it can run on a battery.
-4. A Google Nest Hub (2nd gen) or similar acts as the Thread border router.
+4. A Home Assistant Connect ZBT-2, plugged into the Raspberry Pi, acts as the
+   Thread border router.
 5. A 3D-printed sun shield keeps the sensor out of direct sun and rain.
 
 ## Decisions made so far
 
-- **Location:** Zaragoza, Spain. Parts should be easy to buy in Spain/EU.
+- **Location:** Zaragoza, Spain. The sensor sits outdoors on the office
+  window, with no mains power available.
 - **Phone:** Android. This affects how a homemade Matter device is paired.
-- **Thread border router:** not owned yet. Plan: a used Google Nest Hub (2nd gen), or a Home Assistant Connect ZBT-1.
-- **Battery:** protected 18650 recommended for simplicity. A flat LiPo is the smaller alternative.
+- **Update interval:** every 1-2 hours. Live data is not needed.
+- **Thread border router:** Home Assistant Connect ZBT-2 plus a standalone
+  OpenThread Border Router container on the Pi. The ZBT-1 is discontinued;
+  a used one still works. A used Nest Hub 2 is the easier fallback.
+- **Battery:** protected 18650, recharged about once a year. Target is at
+  least 6 months, ideally 12+.
 - **Version 1:** off-the-shelf modules, no custom circuit board, no custom case.
 - **Bench test:** Wi-Fi, USB powered. **Final:** Thread, battery powered.
 
@@ -46,17 +53,20 @@ This repository documents the whole journey: parts, wiring, firmware,
 - [Final low-power firmware](docs/06-final-firmware.md)
 - [Home Assistant setup](docs/07-home-assistant.md)
 - [Battery and power](docs/08-battery.md)
-- [Outdoor enclosure](docs/09-enclosure.md)
+- [Window enclosure](docs/09-enclosure.md)
 - [Optional custom PCB](docs/10-optional-pcb.md)
-- [Outdoor test plan](docs/11-outdoor-test.md)
+- [Window test plan](docs/11-outdoor-test.md)
 - [Troubleshooting](docs/12-troubleshooting.md)
 - [3D prototype notes](docs/13-3d-prototype.md)
+- [Thread border router setup](docs/14-thread-border-router.md)
 
 ## Glossary
 
 - **Matter** — the language Home Assistant uses to talk to smart devices.
 - **Thread** — a low-power radio network. Better than Wi-Fi for battery devices.
-- **Thread border router** — a small translator between Thread and your normal network.
+- **Thread border router** — a translator between Thread and your normal
+  network. In this project: a ZBT-2 USB radio plus the OpenThread Border
+  Router container on the Pi.
 - **Matter Server** — the Home Assistant service that controls Matter devices.
 - **MCU** — the tiny computer on the board.
 - **SHT40** — the temperature and humidity sensor.

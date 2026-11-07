@@ -36,7 +36,7 @@ Do not use 5 V for the sensor.
 ## Expected output
 
 ```
-Garden sensor bench test
+Window sensor bench test
 SHT40 found.
 First reading: 21.34 C, 48.72 %RH
 Manual pairing code: 34970112332
@@ -63,5 +63,5 @@ If Android refuses the device, see the Android section in
 
 - The sketch is a first draft; it will be tested with the real hardware.
 - The sensor is read every 5 seconds for the bench. The final firmware will
-  read every 5 minutes to save battery.
+  report every 1-2 hours to save battery.
 - The LED is not used in this sketch.

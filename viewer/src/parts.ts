@@ -52,31 +52,31 @@ function buildBox(): THREE.Group {
   const bottom = box(BOX.w, 2, BOX.d, MAT.box);
   bottom.position.set(0, 1, 0);
   bottom.raycast = () => undefined;
-  addEdges(bottom, 0x9fb0bf, 0.34);
+  addEdges(bottom, 0x5c6772, 0.46);
   group.add(bottom);
 
   const front = box(BOX.w, BOX.h, 2, MAT.box);
   front.position.set(0, BOX.h / 2, BOX.d / 2 - 1);
   front.raycast = () => undefined;
-  addEdges(front, 0x9fb0bf, 0.24);
+  addEdges(front, 0x5c6772, 0.36);
   group.add(front);
 
   const back = box(BOX.w, BOX.h, 2, MAT.box);
   back.position.set(0, BOX.h / 2, -BOX.d / 2 + 1);
   back.raycast = () => undefined;
-  addEdges(back, 0x9fb0bf, 0.24);
+  addEdges(back, 0x5c6772, 0.36);
   group.add(back);
 
   const left = box(2, BOX.h, BOX.d, MAT.box);
   left.position.set(-BOX.w / 2 + 1, BOX.h / 2, 0);
   left.raycast = () => undefined;
-  addEdges(left, 0x9fb0bf, 0.24);
+  addEdges(left, 0x5c6772, 0.36);
   group.add(left);
 
   const right = box(2, BOX.h, BOX.d, MAT.box);
   right.position.set(BOX.w / 2 - 1, BOX.h / 2, 0);
   right.raycast = () => undefined;
-  addEdges(right, 0x9fb0bf, 0.24);
+  addEdges(right, 0x5c6772, 0.36);
   group.add(right);
 
   // Gore vent on the bottom face, under the sensor.
@@ -108,7 +108,7 @@ function buildLid(): THREE.Group {
   const lid = roundedBox(BOX.w, 3, BOX.d, 2, MAT.lid);
   lid.position.set(0, 1.5, 0);
   lid.raycast = () => undefined;
-  addEdges(lid, 0xcdd6de, 0.4);
+  addEdges(lid, 0x4f5b66, 0.5);
   group.add(lid);
 
   const gasket = plateWithHole(96, 64, 1, 90, 58, MAT.gasket);
@@ -145,7 +145,7 @@ function buildShield(): THREE.Group {
       ? roundedBox(SHIELD.w, 3, SHIELD.d, 2.5, MAT.shield)
       : plateWithHole(SHIELD.w, SHIELD.d, 3, SHIELD.holeW, SHIELD.holeD, MAT.shield);
     plate.position.set(0, y, 0);
-    addEdges(plate, 0x8b8b7e, 0.16);
+    addEdges(plate, 0x8b8578, 0.28);
 
     const plateGroup = new THREE.Group();
     plateGroup.userData.plateIndex = index;
@@ -300,7 +300,7 @@ function buildBattery(): THREE.Group {
     group.add(cap);
   }
 
-  const cell = cylinder(9.2, 65, MAT.blue, 32);
+  const cell = cylinder(9.2, 65, MAT.cell, 32);
   cell.rotation.z = Math.PI / 2;
   cell.position.set(0, 9.2, 0);
   group.add(cell);
@@ -438,7 +438,7 @@ function buildWires(): THREE.Group {
       [13.5, 31.8, -6],
     ],
     MAT.red,
-    'sensor',
+    'sensor-3v3',
   );
   addWire(
     group,
@@ -451,7 +451,7 @@ function buildWires(): THREE.Group {
       [13.5, 31.8, -2],
     ],
     MAT.black,
-    'sensor',
+    'sensor-gnd',
   );
   addWire(
     group,
@@ -464,7 +464,7 @@ function buildWires(): THREE.Group {
       [13.5, 31.8, 2],
     ],
     MAT.blue,
-    'sensor',
+    'sensor-sda',
   );
   addWire(
     group,
@@ -477,7 +477,7 @@ function buildWires(): THREE.Group {
       [13.5, 31.8, 6],
     ],
     MAT.yellow,
-    'sensor',
+    'sensor-scl',
   );
 
   // Battery: positive through the fuse, negative back to the XIAO.
@@ -492,7 +492,7 @@ function buildWires(): THREE.Group {
       [-33, 39.5, 1],
     ],
     MAT.red,
-    'battery',
+    'battery-positive',
     0.72,
   );
   addWire(
@@ -505,23 +505,23 @@ function buildWires(): THREE.Group {
       [-33, 39.5, 1],
     ],
     MAT.black,
-    'battery',
+    'battery-negative',
     0.72,
   );
 
   const fuse = cylinder(2.1, 9, MAT.dark, 16);
   fuse.rotation.z = Math.PI / 2;
   fuse.position.set(10, 46, -13);
-  fuse.userData.connectionGroup = 'battery';
+  fuse.userData.connectionGroup = 'battery-positive';
   group.add(fuse);
   const fuseBand = cylinder(2.2, 1.2, MAT.metal, 16);
   fuseBand.rotation.z = Math.PI / 2;
   fuseBand.position.set(10, 46, -13);
-  fuseBand.userData.connectionGroup = 'battery';
+  fuseBand.userData.connectionGroup = 'battery-positive';
   group.add(fuseBand);
   const fuseLabel = label('1 A fuse', 'part-label');
   fuseLabel.position.set(10, 51, -13);
-  fuseLabel.userData.connectionGroup = 'battery';
+  fuseLabel.userData.connectionGroup = 'battery-positive';
   group.add(fuseLabel);
 
   // LED wires, from the +Z side of the XIAO to the front wall.
@@ -536,7 +536,7 @@ function buildWires(): THREE.Group {
       [43, 45.5, 32],
     ],
     MAT.green,
-    'led',
+    'led-signal',
     0.42,
   );
   addWire(
@@ -550,7 +550,7 @@ function buildWires(): THREE.Group {
       [43, 44.5, 32],
     ],
     MAT.red,
-    'led',
+    'led-signal',
     0.42,
   );
 
@@ -565,7 +565,7 @@ function buildWires(): THREE.Group {
       [-45, 45.5, 32],
     ],
     MAT.purple,
-    'reed',
+    'reed-signal',
     0.42,
   );
   addWire(
@@ -578,7 +578,7 @@ function buildWires(): THREE.Group {
       [-45, 44.5, 32],
     ],
     MAT.black,
-    'reed',
+    'reed-signal',
     0.42,
   );
 
@@ -594,7 +594,7 @@ function buildWires(): THREE.Group {
       [-33, 40, 3.3],
     ],
     MAT.orange,
-    'divider',
+    'battery-divider',
     0.34,
   );
 
@@ -619,7 +619,7 @@ function buildWires(): THREE.Group {
 }
 export function createDevice(): Device {
   const root = new THREE.Group();
-  root.name = 'garden-weather-sensor';
+  root.name = 'window-weather-sensor';
 
   const boxGroup = buildBox();
   const lidGroup = buildLid();
@@ -737,7 +737,7 @@ export const CONNECTIONS: Connection[] = [
     detail: '3.3 V power for the sensor. Red wire.',
     color: 0xe53935,
     css: '#e53935',
-    group: 'sensor',
+    group: 'sensor-3v3',
     partIds: ['xiao', 'sht40'],
   },
   {
@@ -746,7 +746,7 @@ export const CONNECTIONS: Connection[] = [
     detail: 'Common ground. Black wire.',
     color: 0x111318,
     css: '#5c6670',
-    group: 'sensor',
+    group: 'sensor-gnd',
     partIds: ['xiao', 'sht40'],
   },
   {
@@ -755,7 +755,7 @@ export const CONNECTIONS: Connection[] = [
     detail: 'I2C data. Blue wire.',
     color: 0x1e88e5,
     css: '#1e88e5',
-    group: 'sensor',
+    group: 'sensor-sda',
     partIds: ['xiao', 'sht40'],
   },
   {
@@ -764,7 +764,7 @@ export const CONNECTIONS: Connection[] = [
     detail: 'I2C clock. Yellow wire.',
     color: 0xf2cf3a,
     css: '#fdd835',
-    group: 'sensor',
+    group: 'sensor-scl',
     partIds: ['xiao', 'sht40'],
   },
   {
@@ -773,7 +773,7 @@ export const CONNECTIONS: Connection[] = [
     detail: 'Protected 18650 positive, through a 1 A fuse.',
     color: 0xe53935,
     css: '#e53935',
-    group: 'battery',
+    group: 'battery-positive',
     partIds: ['battery', 'xiao'],
   },
   {
@@ -782,7 +782,7 @@ export const CONNECTIONS: Connection[] = [
     detail: 'Battery negative return. Black wire.',
     color: 0x111318,
     css: '#5c6670',
-    group: 'battery',
+    group: 'battery-negative',
     partIds: ['battery', 'xiao'],
   },
   {
@@ -791,7 +791,7 @@ export const CONNECTIONS: Connection[] = [
     detail: 'Two wires through the current-limiting resistors. Green/red LED.',
     color: 0x43a047,
     css: '#43a047',
-    group: 'led',
+    group: 'led-signal',
     partIds: ['xiao', 'led'],
   },
   {
@@ -800,7 +800,7 @@ export const CONNECTIONS: Connection[] = [
     detail: 'Magnet-triggered status and factory reset. Purple wire.',
     color: 0x8e24aa,
     css: '#8e24aa',
-    group: 'reed',
+    group: 'reed-signal',
     partIds: ['xiao', 'reed'],
   },
   {
@@ -809,7 +809,7 @@ export const CONNECTIONS: Connection[] = [
     detail: 'Voltage divider for battery percentage. Orange wire.',
     color: 0xfb8c00,
     css: '#fb8c00',
-    group: 'divider',
+    group: 'battery-divider',
     partIds: ['battery', 'xiao'],
   },
 ];
@@ -852,7 +852,7 @@ export const STEPS: Step[] = [
   },
   {
     title: 'Test the low-power firmware',
-    body: 'Flash the final firmware, check that it sleeps, and measure the battery current. Do not close the box yet.',
+    body: 'Flash the final firmware, check that it sleeps and reports every 1-2 hours, then measure the battery current. Do not close the box yet.',
     mode: 'assembled',
     partIds: ['xiao', 'battery'],
     focusId: 'box',
@@ -879,8 +879,8 @@ export const STEPS: Step[] = [
     focusId: 'shield',
   },
   {
-    title: 'Mount outdoors',
-    body: '1.5–2 m above ground, away from walls, cable entry down. Check the Thread signal and the first 24 hours of readings.',
+    title: 'Mount on the window',
+    body: 'Outside the glass, 10–15 cm from the wall, shaded from direct sun. Cable entry down. Check the Thread signal and the first 24 hours of readings.',
     mode: 'assembled',
     partIds: ['shield', 'box'],
     focusId: 'shield',

@@ -1,4 +1,4 @@
-# Outdoor test plan
+# Window test plan
 
 Do not put the final device outside until the bench test and a 24-hour
 indoor run are stable.
@@ -16,18 +16,20 @@ indoor run are stable.
 
 ## Where to put it
 
-- 1.5-2 m above the ground.
-- Over grass or soil, not over concrete or gravel.
-- Away from walls, heat vents, air conditioners, and direct sun.
-- The shield handles sun, but airflow is better in an open spot.
+- Outside the office window glass, not between the glass and a blind.
+- 10-15 cm away from the wall and the glass.
+- Shaded from direct sun, or on a north-facing window.
+- Away from heat vents, air conditioners, radiators, and direct sun.
+- The shield handles sun, but airflow is better with open space around it.
 - Within Thread range of the border router. Start near the house, then move
-  it to the final spot.
+  it to the final window spot.
+- Clamped or bracketed so it can be lifted inside for charging.
 
 ## Reference measurement
 
-Put a normal thermometer/hygrometer in the same shade, near the device.
-Write down both readings at the same time, once a day. This tells you the
-temperature offset.
+Put a normal thermometer/hygrometer in the same shade but away from the
+window and wall. Write down both readings at the same time, once a day. This
+tells you the temperature offset caused by the window placement.
 
 A simple indoor/outdoor thermometer with a remote probe is fine. Do not use
 a phone weather app as the reference; it is for a different location.
@@ -62,20 +64,28 @@ Copy this table into the journey log and fill it in daily.
   placement needs work.
 - Check that the box is not hot to the touch.
 
-### 2. Rain
+### 2. Window heat
+
+- Compare the device with a reference in open shade, not next to the window.
+- If the device reads high in the afternoon, the glass or wall is heating it.
+- Move it further from the glass, add a shield plate, or choose a shaded
+  window.
+- A difference of more than about 1 °C means the placement needs work.
+
+### 3. Rain
 
 - After 24 hours of rain, open the box.
 - Look for water droplets, damp paper, or condensation.
 - If there is water, dry everything, fix the leak, and repeat the paper
   towel test.
 
-### 3. Cold night
+### 4. Cold night
 
 - Check the reading near 0 °C.
 - Check the battery voltage in the morning.
 - Do not charge below 0 °C.
 
-### 4. Radio range
+### 5. Radio range
 
 - In Home Assistant, open the Matter network map if available.
 - Check the signal strength / RSSI.
@@ -83,12 +93,14 @@ Copy this table into the journey log and fill it in daily.
   mains-powered Thread router.
 - A weak signal also costs battery life, because the radio retries.
 
-### 5. Battery
+### 6. Battery
 
 - Log the voltage every day at the same time.
 - After 14 days, estimate the monthly drain.
-- If the estimate is worse than 6 months, reduce the report frequency or
-  improve the signal.
+- The target is 12+ months; the minimum is 6 months.
+- If the estimate is worse than 12 months, first check the sensor breakout's
+  standby current and the Thread signal. Only then move from 1-hour to
+  2-hour reports.
 
 ## Success criteria
 
@@ -96,7 +108,7 @@ Copy this table into the journey log and fill it in daily.
 - [ ] Temperature within about ±0.5 °C of the reference on a sunny day.
 - [ ] Humidity tracks the reference within a few percent.
 - [ ] No dropouts for 14 days.
-- [ ] Battery estimate at least 6 months.
+- [ ] Battery estimate at least 6 months, target 12+.
 - [ ] The box and shield survive wind and sun.
 
 ## If something fails

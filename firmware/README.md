@@ -5,7 +5,7 @@ Two firmware stages:
 | Folder | Purpose | Radio | Power |
 |---|---|---|---|
 | `bench/` | Prove the sensor and Home Assistant path | Wi-Fi | USB |
-| `final/` | Real outdoor device | Thread | Battery |
+| `final/` | Real window device | Thread | Battery |
 
 ## Bench firmware
 
@@ -18,8 +18,8 @@ See [the bench guide](../docs/05-bench-test.md) for the full steps.
 ## Final firmware
 
 ESP-IDF + Espressif Matter SDK, based on the `icd_app` and `sensors`
-examples. It is not written yet; the plan is in
-[the final firmware doc](../docs/06-final-firmware.md).
+examples. It reports every 1-2 hours over Thread. It is not written yet;
+the plan is in [the final firmware doc](../docs/06-final-firmware.md).
 
 ## Status
 

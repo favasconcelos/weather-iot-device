@@ -45,8 +45,9 @@ abused. Follow these rules.
 - Do not puncture, crush, bend, or drop the cell.
 - Do not charge below 0 °C. Bring the device indoors to charge in winter.
 - Charge on a non-flammable surface, and stay nearby the first time.
-- Use the XIAO's built-in charger. Do not connect a random 5 V supply
-  directly to the battery.
+- Use the XIAO's built-in charger, or a proper Li-ion charger module. Do not
+  connect a random 5 V supply directly to the battery. The XIAO's charge
+  current is low; a full 18650 charge can take a day or more.
 - If the cell swells, gets hot, or smells sweet, stop using it and dispose
   of it at a battery recycling point.
 - Do not leave the device in a hot car or in direct sun with the battery
@@ -83,10 +84,30 @@ abused. Follow these rules.
 
 ## Safety: Home Assistant
 
-- Do not factory reset the eufy vacuum or other working devices.
+- Do not factory reset the Anker Solix or other working devices.
 - Only reset the new sensor.
-- Back up the Matter Server data before adding a new device.
+- Back up the Matter Server data before adding a new device or changing the
+  Docker network.
 - Do not change the Docker network while the Matter devices are working.
+- The Anker Solix is a Wi-Fi Matter device. It can keep working while you add
+  Thread, but verify it after the network change.
+
+## Safety: Thread border router
+
+- The ZBT-2 runs one protocol at a time. Flash it to Thread firmware; do not
+  expect Zigbee and Thread at the same time.
+- Only one container should claim the USB radio. Stop any other container
+  that has `/dev/ttyACM*` or `/dev/ttyUSB*` mapped.
+- Pass the radio by its `/dev/serial/by-id/...` path, not by a number that can
+  change after a reboot.
+- Use the included USB-C cable. Keep the radio away from USB 3 ports, metal
+  cases, and power supplies.
+- Thread is IPv6-only. Enable IPv6 forwarding and router-advertisement route
+  information on the Pi before debugging the sensor.
+- Do not expose the OTBR web UI or REST API to the internet. They are for the
+  local network only.
+- Back up the `matter-server` data and the OTBR data before changing the
+  network or re-flashing the radio.
 
 ## Before you power up: checklist
 

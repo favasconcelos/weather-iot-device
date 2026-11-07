@@ -1,6 +1,7 @@
 # 3D prototype
 
-An interactive 3D model of the sensor is in [`viewer/`](../viewer/README.md).
+An interactive 3D model of the office-window sensor is in
+[`viewer/`](../viewer/README.md).
 
 It runs in the browser with Three.js and shows:
 

@@ -1,14 +1,14 @@
 # 3D prototype viewer
 
-An interactive Three.js model of the garden weather sensor. It is here to
-help you understand the parts, how they fit together, the wiring, and the
+An interactive Three.js model of the office-window weather sensor. It is here
+to help you understand the parts, how they fit together, the wiring, and the
 assembly order.
 
 This is a **concept model**, not a manufacturing CAD file. Dimensions are
 approximate. The real STL/STEP files for the printed shield will be added
 later, after the box is measured.
 
-![Wiring view](screenshot-wiring.png)
+![Assembled weather sensor](screenshot-assembled.png)
 
 ## Run it
 
@@ -27,8 +27,8 @@ npm run build
 npm run preview
 ```
 
-The build output is `viewer/dist/`. Three.js is bundled; no CDN is needed at
-runtime.
+The build output is `viewer/dist/`. Three.js and the two typefaces are
+bundled; no CDN or network request is needed at runtime.
 
 ## Controls
 
@@ -36,8 +36,10 @@ runtime.
 - **Scroll** to zoom.
 - **Right-drag** to pan.
 - **Click a part** in the 3D view or in the Parts list to select it.
-- **Click a connection** to highlight those wires.
+- **Click a connection** to isolate those wires.
 - **Click an assembly step** to move to the relevant view.
+- **Escape** closes the details panel or clears the current selection.
+- On a phone or tablet, **Details** opens the parts, wiring and assembly lists.
 
 ## The four views
 
@@ -46,12 +48,18 @@ runtime.
 | **Assembled** | The finished device: box, lid, and radiation shield |
 | **Exploded** | The lid and electronics lifted out, so you can see the internal order |
 | **Wiring** | The box in x-ray mode, with the colour-coded wires |
-| **Print parts** | The printed radiation shield, fanned out to show its shape |
+| **Printed shield** | The 3D-printed radiation shield, fanned out to show its shape |
 
-The **Explode** slider moves between assembled and exploded. The checkboxes
-turn the shield, lid, wires, labels, and dimensions on or off.
+The **Explode** slider moves between assembled and exploded. The layer toggles
+turn the shield, lid, wires, labels, and dimensions on or off. Selecting an
+internal part in the assembled view switches to Wiring so the enclosure does
+not hide it.
 
 ## Screenshots
+
+### Assembled
+
+![Assembled view](screenshot-assembled.png)
 
 ### Wiring
 
@@ -59,7 +67,7 @@ turn the shield, lid, wires, labels, and dimensions on or off.
 
 ### Connection highlight
 
-![SDA connection highlighted](screenshot-connection.png)
+![SDA connection isolated](screenshot-connection.png)
 
 ### Exploded
 
@@ -67,7 +75,7 @@ turn the shield, lid, wires, labels, and dimensions on or off.
 
 ### Printed shield
 
-![Print view](screenshot-print.png)
+![Printed shield view](screenshot-print.png)
 
 ## What is modelled
 
@@ -108,6 +116,8 @@ viewer/
 ├── vite.config.ts
 ├── screenshot-*.png
 └── src/
+    ├── assets/
+    │   └── fonts/     Instrument Sans and DM Mono (self-hosted)
     ├── main.ts        scene, UI, interactions
     ├── parts.ts       geometry and part descriptions
     ├── dimensions.ts  dimension lines

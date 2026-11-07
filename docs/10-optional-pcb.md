@@ -18,11 +18,13 @@ It is not required for a working device.
 - XIAO ESP32-C6 headers or castellated pads
 - SHT40 sensor (bare, with decoupling capacitor)
 - Battery connector and 1 A fuse
+- Li-ion charger and USB-C charge port
 - LED and resistors
 - Reed switch connector
 - Battery voltage divider
-- Optional MOSFET to power the sensor only when measuring
+- MOSFET to power the sensor only when measuring
 - Optional external antenna connector
+- Window-frame mounting holes
 
 ## How "printing a board" works
 
@@ -47,10 +49,12 @@ Prices vary.
 - Keep the SHT40 away from the regulator and the battery.
 - Add a 100 nF decoupling capacitor next to the SHT40.
 - Add 4.7 kΩ I2C pull-ups if they are not on the sensor module.
+- Route the SHT40 power through a MOSFET or a GPIO so it is off between
+  measurements.
 - Add a fuse and reverse-polarity protection.
 - Add test pads for 3V3, GND, SDA, SCL, and battery voltage.
 - Use a JST-PH connector for the battery, or solder wires with strain relief.
-- Add mounting holes that match the box.
+- Add mounting holes that match the box and the window-frame clamp.
 
 ## When to do it
 

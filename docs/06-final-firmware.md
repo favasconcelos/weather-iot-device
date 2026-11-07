@@ -3,6 +3,9 @@
 This page is the plan for the final firmware. The actual project will be
 added after the bench test works.
 
+The border router setup is in
+[the border router guide](14-thread-border-router.md).
+
 ## Why not the Arduino sketch?
 
 The Arduino sketch is perfect for the bench, but it keeps the radio and the
@@ -10,8 +13,12 @@ main loop running. On a battery it would last days, not months.
 
 The final firmware uses **ESP-IDF** with **Espressif's Matter SDK** and the
 **ICD** (Intermittently Connected Device) support. In plain words: the device
-sleeps, wakes every few minutes, reads the sensor, reports, and goes back to
-sleep.
+stays in a low-power ICD state, wakes on a schedule, reads the sensor,
+reports every 1-2 hours, and goes back to sleep.
+
+The radio is not off entirely. It still checks in with its Thread parent
+every few seconds or minutes, which is what keeps the device reachable and
+costs most of the average current.
 
 ## Starting points from Espressif
 
@@ -22,17 +29,36 @@ Two official examples are the base:
 - [Sensors example](https://github.com/espressif/esp-matter/tree/main/examples/sensors)
   — creates a temperature sensor endpoint and a humidity sensor endpoint.
 
+A useful field report from a similar battery-powered ESP32-C6 sensor is
+[`vavallee/homecadia`](https://github.com/vavallee/homecadia). It documents the
+current measurements and the traps, even though it uses an e-ink display and
+a different enclosure.
+
 We will combine them: the sensor endpoints from `sensors`, the sleep/power
 settings from `icd_app`, and a new SHT40 driver.
 
 ## What the final firmware does
 
 1. Boots and joins the Thread network.
-2. Reads the SHT40 every 5 minutes.
+2. Reads the SHT40 every 1-2 hours.
 3. Updates the Matter temperature and humidity attributes.
 4. Reads the battery voltage and updates the standard Power Source cluster.
 5. Goes back to sleep.
 6. Handles the LED patterns and the magnet switch.
+
+## Report interval and reachability
+
+- **Report interval:** every 60-120 minutes.
+- **Reachability:** the ICD stays associated in a low-power mode and polls
+  its parent between reports. This is separate from the report interval.
+- **Why:** Home Assistant does not need live data. The slow report interval
+  keeps the radio bursts rare, while the periodic poll keeps the device
+  reachable for commands and subscription updates.
+
+Do not confuse the report interval with the ICD idle-mode setting. The
+report interval is the application timer; the ICD settings control how the
+Thread radio sleeps and polls. Start with the `icd_app` defaults and tune
+only after measuring the real current.
 
 ## Matter endpoints
 
@@ -57,6 +83,8 @@ firmware/final/
     ├── app_main.cpp
     ├── sht4x.c
     ├── sht4x.h
+    ├── sensor_power.c
+    ├── sensor_power.h
     ├── led.c
     ├── led.h
     ├── battery.c
@@ -81,6 +109,21 @@ The SHT40 is simple:
 The Adafruit library is fine for the bench. For the final firmware we will
 use a small driver so we control the timing and the power.
 
+## Sensor power
+
+The Adafruit SHT40 breakout has a 3.3 V regulator and level shifters. They
+can draw tens of microamps continuously, which is significant over a year.
+
+For the final build, do one of these:
+
+- Power the breakout from a GPIO (or a small P-channel MOSFET) and turn it on
+  only for the measurement, or
+- Use a bare SHT40 with 4.7 kΩ I2C pull-ups and a 100 nF decoupling capacitor.
+
+Add a short delay after powering the sensor before reading it, and turn it
+off again after the reading. Measure the standby current with the sensor
+powered down.
+
 ## Sleep and power settings
 
 These are the important `sdkconfig` options, based on the `icd_app` example:
@@ -92,12 +135,16 @@ CONFIG_IEEE802154_SLEEP_ENABLE=y
 CONFIG_OPENTHREAD_MTD=y
 CONFIG_ENABLE_ICD_SERVER=y
 CONFIG_ICD_FAST_POLL_INTERVAL_MS=500
-CONFIG_ICD_IDLE_MODE_INTERVAL_SEC=300
+CONFIG_ICD_SLOW_POLL_INTERVAL_MS=5000
+CONFIG_ICD_IDLE_MODE_INTERVAL_SEC=60
 CONFIG_ICD_ACTIVE_MODE_INTERVAL_MS=1000
 CONFIG_ICD_ACTIVE_MODE_THRESHOLD_MS=1000
 ```
 
-- `IDLE_MODE_INTERVAL_SEC=300` means the device wakes about every 5 minutes.
+- `IDLE_MODE_INTERVAL_SEC=60` is the Short Idle Time (SIT) ICD setting. The
+  1-2 hour report interval is an application timer, not this value.
+- Stick to SIT for version 1. Long Idle Time (LIT) needs check-in support in
+  the controller, and Home Assistant's support is still limited.
 - The slow polling interval is set by the ICD example. We will measure the
   result and tune it.
 - The radio transmits at a reduced power if the link is good. We will test
@@ -138,7 +185,19 @@ This avoids drilling a button hole in the waterproof box.
 - Convert voltage to percent with a Li-ion curve.
 - Report both `BatPercentRemaining` and `BatVoltage`.
 
-The divider draws about 1.8 µA at 3.7 V. That is acceptable.
+The divider draws about 1.8 µA at 3.7 V. That is acceptable. If you want to
+remove even that, switch the bottom of the divider with a GPIO and only
+enable it during the measurement.
+
+## Expected battery drain
+
+A similar XIAO ESP32-C6 Matter-over-Thread sensor measured about **125 µA**
+average with the radio in ICD mode. That is roughly **3 mAh/day**.
+
+With a protected 3400 mAh 18650 (about 3000 mAh usable), that is around
+1000 days in theory, or **12-18 months** after cold weather, self-discharge,
+and regulator losses. The 1-2 hour report interval is not the dominant load;
+the Thread poll is. Measure the real value before trusting the estimate.
 
 ## Build with Docker
 
@@ -174,14 +233,14 @@ docker run --rm -it --device=/dev/ttyACM0 \
 ## Test plan
 
 - [ ] Builds without warnings.
-- [ ] Joins Thread and appears in Home Assistant.
-- [ ] Temperature and humidity update every 5 minutes.
+- [ ] Joins Thread through the ZBT-2 + OTBR and appears in Home Assistant.
+- [ ] Temperature and humidity update every 1-2 hours.
 - [ ] Battery percentage and voltage appear in Home Assistant.
 - [ ] LED patterns work.
 - [ ] Magnet status and factory reset work.
 - [ ] Sleep current measured.
 - [ ] 24-hour run without a reboot.
-- [ ] Battery estimate matches the calculation.
+- [ ] Battery estimate matches the calculation (12+ months target).
 
 ## When we build it
 

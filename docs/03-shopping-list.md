@@ -8,7 +8,7 @@ possible".
 
 - **Phase 1** is everything you need for the bench test. Order this first.
 - **Phase 2** is the outdoor build. Order it after the bench test works.
-- **Thread border router** is the one extra device the project needs.
+- **ZBT-2 border router** is the one extra device the project needs.
 - **Do not buy yet** is listed at the end. It avoids wasting money on
   parts we may not need.
 
@@ -106,36 +106,45 @@ possible".
 
 ## Thread border router
 
-You need exactly one of these options.
+**Chosen: Home Assistant Connect ZBT-2 + Docker OTBR.** One radio, one extra
+purchase, fully local. The ZBT-1 is discontinued; buy a used one only if it
+is cheap and you do not mind the older radio.
 
 | Option | Cost | Effort | Notes |
 |---|---|---|---|
-| Used Google Nest Hub (2nd gen) | €40-60 | Low | Best "just works" path for Android. Check Wallapop, Milanuncios, Cash Converters, Facebook Marketplace. |
-| New Google Nest Hub (2nd gen) | €70-100 | Low | MediaMarkt, Amazon.es. |
+| **Home Assistant Connect ZBT-2 + Docker OTBR** | **~€45** | **Medium** | **Chosen.** Better antenna than the ZBT-1. Your HA runs in Docker, so you run a standalone OTBR container. Budget an evening. |
+| Used Home Assistant Connect ZBT-1 + Docker OTBR | €20-35 | Medium | Still works and gets updates, but it is out of production. Same OTBR setup. |
+| Used Google Nest Hub (2nd gen) | €40-60 | Low | Easiest on the border-router side, but the Thread network is Google-owned and you must sync credentials. Good fallback. |
+| New Google Nest Hub (2nd gen) | €70-100 | Low | MediaMarkt, Amazon.es. More expensive than the ZBT-2. |
 | Google TV Streamer | €100-120 | Low | Newer, more expensive, also has Thread. |
-| Home Assistant Connect ZBT-1 + Docker OTBR | €30 | Medium-high | Cheaper, but your HA runs in Docker with a custom network. Budget an evening for debugging. |
 | Borrow an Apple TV 4K / HomePod mini | €0 | Low | Only if you can borrow one. It creates an Apple Thread network. |
 
-**Important:** the Nest Hub must be set up in the Google Home app on the
-same Wi-Fi network as Home Assistant. Then the Home Assistant Companion app
-can send the Thread credentials to Home Assistant. See
-[Home Assistant Thread docs](https://www.home-assistant.io/integrations/thread/).
+**Why the ZBT-2?** It is the current Nabu Casa radio, it keeps the Thread
+network under your control, and it is cheaper than a Nest Hub. The catch is
+that it is only a radio: you need the OpenThread Border Router container on
+the Pi. See [the border router guide](14-thread-border-router.md).
 
-**Why a Nest Hub 2 and not a random smart speaker?**
-The Nest Hub (2nd gen) is on Home Assistant's list of known-working Thread
-border routers. It is common on the used market and easy to set up.
+The ZBT-2 includes a USB-C cable. Use it, and keep the radio away from USB 3
+ports and metal. If the Pi is in a cabinet, a short USB extension cable helps.
+
+**If you choose a Nest Hub instead:** set it up in the Google Home app on the
+same Wi-Fi network as Home Assistant, then use the Android Companion app to
+send the Thread credentials to Home Assistant. See
+[Home Assistant Thread docs](https://www.home-assistant.io/integrations/thread/).
 
 ---
 
 ## Do not buy yet
 
 - Custom PCB (JLCPCB/PCBWay). Only after version 1 works.
-- Bare SHT40 sensor. Hard to hand-solder; use the breakout for now.
+- Bare SHT40 sensor. Hard to hand-solder; use the breakout for now. Revisit it
+  if the breakout's regulator wastes too much standby current.
 - Expensive power profiler (Joulescope, Otii, Nordic PPK2). We can estimate
   with a multimeter first.
 - 3D printer. Use your friend's printer.
-- Solar panel. Not needed for the first version.
+- Solar panel. The 1-2 hour interval does not need one.
 - Fancy enclosure. The IP65 box + printed shield is enough.
+- ZBT-1 at a collector price. The ZBT-2 is the current part.
 
 ---
 
@@ -145,8 +154,8 @@ border routers. It is common on the used market and easy to set up.
 |---|---|
 | Bench kit | €30-50 |
 | Outdoor kit | €65-90 |
-| Thread border router | €0-60 |
-| **Total** | **€95-200** |
+| ZBT-2 border router | €45 |
+| **Total** | **€140-190** |
 
 Tools (soldering iron, multimeter, etc.) are extra if you do not already
 own them.
@@ -161,8 +170,11 @@ own them.
 - **Electronics:** Mouser.es and Digi-Key have fast shipping but charge
   shipping unless the order is large. Combine parts. Amazon.es is faster for
   generic modules but quality varies.
+- **ZBT-2:** buy from the Nabu Casa store, Seeed Studio, or an EU reseller.
+  Avoid marketplace listings with unknown firmware. The ZBT-1 is
+  discontinued, so only buy one used if it is cheap.
 - **Used devices:** Wallapop and Milanuncios are the best places for a used
-  Nest Hub 2. Ask for the original power adapter.
+  Nest Hub 2 if you choose the fallback. Ask for the original power adapter.
 - **18650 cells:** NKON (Netherlands) is reliable and ships to Spain. A local
   vape shop may also have protected cells, but check the brand and condition.
 - **Import:** Seeed Studio ships from China. Expect 2-4 weeks and possible

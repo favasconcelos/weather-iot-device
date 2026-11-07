@@ -101,7 +101,7 @@ If the board is not detected:
 You should see something like:
 
 ```
-Garden sensor bench test
+Window sensor bench test
 SHT40 found.
 Manual pairing code: 34970112332
 QR code URL: https://project-chip.github.io/connectedhomeip/qrcode.html?data=...
@@ -167,7 +167,7 @@ from the Raspberry Pi instead.
 In Home Assistant:
 
 1. Go to **Settings > Devices & services > Matter**.
-2. Open the new device (it should be called "Garden Sensor" or similar).
+2. Open the new device (it should be called "Window Sensor" or similar).
 3. You should see:
    - a temperature entity
    - a humidity entity
@@ -175,7 +175,8 @@ In Home Assistant:
 Compare the readings with a normal room thermometer. Small differences are
 normal. Write down the offset in the journey log.
 
-The serial monitor should print a new reading every 5 seconds.
+The serial monitor should print a new reading every 5 seconds. That is only
+for the bench. The final firmware reports every 1-2 hours to save battery.
 
 ---
 
@@ -200,7 +201,7 @@ The serial monitor should print a new reading every 5 seconds.
 | Temperature is always 0 | Sensor not read | Check the I2C address; check the sketch |
 | Pairing fails | Phone too far, wrong Wi-Fi, Android refuses | Move closer; use 2.4 GHz; use the Android workaround |
 | Device not in HA | Matter Server did not see it | Check `docker logs matter-server --tail 100` on the Pi |
-| Device reboots every 5 minutes | `matterWaitUntilReady` timeout | The sketch uses `matterWaitUntilReady(0)` to wait forever; check the serial log |
+| Device reboots repeatedly | `matterWaitUntilReady` timeout | The sketch uses `matterWaitUntilReady(0)` to wait forever; check the serial log |
 
 For more, see [Troubleshooting](12-troubleshooting.md).
 
@@ -211,7 +212,8 @@ For more, see [Troubleshooting](12-troubleshooting.md).
 Once the bench test works:
 
 1. Order the outdoor kit (see the shopping list).
-2. Order or borrow the Thread border router.
+2. Order the ZBT-2 and set up the OTBR container
+   ([border router guide](14-thread-border-router.md)).
 3. We build the low-power ESP-IDF firmware and measure the battery draw.
 
 Do not put the bench build in a box yet. Finish the firmware and the

@@ -4,7 +4,7 @@ This folder will hold the 3D-printable files:
 
 - `sun-shield.stl` — the ready-to-print file for your friend
 - `sun-shield.step` — the editable 3D model
-- `bracket.stl` — pole/fence mount
+- `bracket.stl` — window-frame clamp/bracket
 - `print-settings.md` — material and slicer settings
 - `assembly.md` — step-by-step assembly
 
@@ -31,5 +31,6 @@ Suggested settings:
 - 5-6 white plates with 8-10 mm air gaps
 - top plate solid, sides open, bottom open
 - central space for the electronics box
-- mounting bracket for a pole or fence
+- removable clamp/bracket for the office window frame
+- 10-15 cm stand-off from the glass and wall
 - parametric so the box size can change

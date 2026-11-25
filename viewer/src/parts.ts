@@ -18,7 +18,8 @@ import type { Connection, Device, Part, PartId, Step } from './types';
 const BOX = { w: 100, h: 50, d: 68 };
 const SHIELD = { w: 150, d: 110, holeW: 110, holeD: 78, count: 6, y0: 10, gap: 16 };
 const XIAO_POS: [number, number, number] = [-27, 40, 12];
-const SHT40_POS: [number, number, number] = [25, 32, 0];
+const HAT_GAP = 9;
+const HAT_POS: [number, number, number] = [XIAO_POS[0], XIAO_POS[1] + HAT_GAP, XIAO_POS[2]];
 const BATTERY_POS: [number, number, number] = [-5, 28, -21];
 const LED_POS: [number, number, number] = [45, 45, 34];
 const REED_POS: [number, number, number] = [-45, 45, 34];
@@ -79,19 +80,19 @@ function buildBox(): THREE.Group {
   addEdges(right, 0x9fb0bf, 0.24);
   group.add(right);
 
-  // Gore vent on the bottom face, under the sensor.
+  // Gore vent on the bottom face, under the XIAO + Logger HAT stack.
   const ventRing = cylinder(6.5, 2, MAT.dark, 24);
-  ventRing.position.set(25, -0.5, 0);
+  ventRing.position.set(XIAO_POS[0], -0.5, XIAO_POS[2]);
   group.add(ventRing);
   const ventBody = cylinder(5.6, 4, MAT.metal, 24);
-  ventBody.position.set(25, -2.5, 0);
+  ventBody.position.set(XIAO_POS[0], -2.5, XIAO_POS[2]);
   group.add(ventBody);
   const membrane = cylinder(5.1, 0.5, MAT.white, 24);
-  membrane.position.set(25, -4.6, 0);
+  membrane.position.set(XIAO_POS[0], -4.6, XIAO_POS[2]);
   group.add(membrane);
 
   const ventLabel = label('Gore vent (bottom)', 'part-label');
-  ventLabel.position.set(25, -8, 0);
+  ventLabel.position.set(XIAO_POS[0], -8, XIAO_POS[2]);
   group.add(ventLabel);
 
   const boxLabel = label('IP65 box', 'part-label');
@@ -222,6 +223,9 @@ function buildXiao(): THREE.Group {
       const base = box(1.05, 0.9, 1.05, MAT.black);
       base.position.set(x, 0.85, z);
       group.add(base);
+      const post = box(0.64, HAT_GAP - 0.6, 0.64, MAT.gold);
+      post.position.set(x, 0.9 + (HAT_GAP - 0.6) / 2, z);
+      group.add(post);
     }
   }
 
@@ -235,53 +239,88 @@ function buildXiao(): THREE.Group {
   }
 
   const xiaoLabel = label('XIAO ESP32-C6', 'part-label');
-  xiaoLabel.position.set(0, 9, 0);
+  xiaoLabel.position.set(0, -7, 0);
   group.add(xiaoLabel);
 
   return group;
 }
 
-function buildSht40(): THREE.Group {
+function buildHat(): THREE.Group {
   const group = new THREE.Group();
-  group.position.set(...SHT40_POS);
+  group.position.set(...HAT_POS);
 
-  const board = roundedBox(25.4, 1.6, 17.8, 0.7, MAT.pcbPurple);
+  const board = roundedBox(21, 1.6, 17.8, 0.7, MAT.pcbBlack);
   group.add(board);
 
-  const sensor = roundedBox(1.6, 1.0, 1.6, 0.15, MAT.white);
-  sensor.position.set(0, 1.2, 0);
-  group.add(sensor);
+  // Castellated pads along both long edges, 7 per side like the XIAO.
+  for (let i = 0; i < 7; i += 1) {
+    const x = -7.6 + i * 2.53;
+    for (const z of [-8.7, 8.7]) {
+      const pad = cylinder(0.8, 1.9, MAT.gold, 14);
+      pad.position.set(x, 0, z);
+      group.add(pad);
+    }
+  }
 
-  const window = box(0.9, 0.08, 0.9, MAT.dark);
-  window.position.set(0, 1.73, 0);
-  group.add(window);
-
+  // PCF8563 real-time clock (SOIC-8) and its 32.768 kHz crystal.
+  const rtc = box(5, 1.2, 4, MAT.black);
+  rtc.position.set(1.2, 1.4, -2.2);
+  group.add(rtc);
   for (let i = 0; i < 4; i += 1) {
-    const z = -6 + i * 4;
-    const pin = cylinder(0.45, 2.2, MAT.gold, 12);
-    pin.position.set(-11.5, 1.2, z);
-    group.add(pin);
+    for (const z of [-4.5, 0.1]) {
+      const lead = box(0.5, 0.2, 0.9, MAT.metal);
+      lead.position.set(-0.45 + i * 1.27, 0.9, z);
+      group.add(lead);
+    }
   }
-  const headerBase = box(4.2, 1.0, 1.6, MAT.black);
-  headerBase.position.set(-11.5, 0.9, -6);
-  group.add(headerBase);
-  for (let i = 1; i < 4; i += 1) {
-    const base = headerBase.clone();
-    base.position.z = -6 + i * 4;
-    group.add(base);
+  const crystal = box(3.2, 1.0, 1.6, MAT.metal);
+  crystal.position.set(7.4, 1.3, -4.6);
+  group.add(crystal);
+
+  // SHT40 (DFN, the temperature and humidity sensor) with its sensing window.
+  const sht = roundedBox(1.8, 0.7, 1.8, 0.15, MAT.black);
+  sht.position.set(-6.2, 1.15, 2.2);
+  group.add(sht);
+  const shtWindow = box(0.8, 0.08, 0.8, MAT.white);
+  shtWindow.position.set(-6.2, 1.54, 2.2);
+  group.add(shtWindow);
+
+  // BH1750 ambient light sensor.
+  const light = roundedBox(2.4, 0.9, 2.2, 0.2, MAT.black);
+  light.position.set(-1.6, 1.25, 4.6);
+  group.add(light);
+  const lightWindow = box(0.9, 0.08, 0.9, MAT.ceramic);
+  lightWindow.position.set(-1.6, 1.74, 4.6);
+  group.add(lightWindow);
+
+  // Battery divider transistor, a few passives, and the battery pad.
+  const transistor = box(2.9, 1.1, 1.5, MAT.black);
+  transistor.position.set(6.6, 1.2, 2.2);
+  group.add(transistor);
+  for (const [x, z] of [
+    [-8.3, -1.2],
+    [-3.4, -6.2],
+    [-3.4, 0.4],
+    [3.8, 5.6],
+    [8.4, 6.0],
+    [1.6, 2.4],
+  ] as Array<[number, number]>) {
+    const passive = box(1.6, 0.5, 0.8, MAT.dark);
+    passive.position.set(x, 1.05, z);
+    group.add(passive);
+    for (const dx of [-0.7, 0.7]) {
+      const end = box(0.25, 0.55, 0.85, MAT.metal);
+      end.position.set(x + dx, 1.05, z);
+      group.add(end);
+    }
   }
+  const batteryPad = cylinder(1.1, 1.0, MAT.gold, 16);
+  batteryPad.position.set(6, 0.9, 6.2);
+  group.add(batteryPad);
 
-  const regulator = box(3, 1.1, 3, MAT.black);
-  regulator.position.set(7.5, 1.2, -5.5);
-  group.add(regulator);
-
-  const levelShifter = box(3, 1.1, 2.4, MAT.black);
-  levelShifter.position.set(7.5, 1.2, 5.5);
-  group.add(levelShifter);
-
-  const shtLabel = label('SHT40 sensor', 'part-label');
-  shtLabel.position.set(0, 8, 0);
-  group.add(shtLabel);
+  const hatLabel = label('Logger HAT · SHT40 + light + clock', 'part-label');
+  hatLabel.position.set(0, 7, 0);
+  group.add(hatLabel);
 
   return group;
 }
@@ -426,60 +465,6 @@ function addWire(
 function buildWires(): THREE.Group {
   const group = new THREE.Group();
 
-  // SHT40: 3V3, GND, SDA, SCL. The wires leave the -Z side of the XIAO.
-  addWire(
-    group,
-    [
-      [-34.6, 41.2, 3.3],
-      [-33, 46, 5],
-      [-20, 50, 8],
-      [0, 50, 4],
-      [10, 40, -3],
-      [13.5, 31.8, -6],
-    ],
-    MAT.red,
-    'sensor',
-  );
-  addWire(
-    group,
-    [
-      [-32.05, 41.2, 3.3],
-      [-30, 45, 1],
-      [-15, 49, 1],
-      [0, 50, 2],
-      [10, 38, 0],
-      [13.5, 31.8, -2],
-    ],
-    MAT.black,
-    'sensor',
-  );
-  addWire(
-    group,
-    [
-      [-29.5, 41.2, 3.3],
-      [-27, 44.5, -1],
-      [-10, 48, -1],
-      [2, 49, 3],
-      [9, 39, 2],
-      [13.5, 31.8, 2],
-    ],
-    MAT.blue,
-    'sensor',
-  );
-  addWire(
-    group,
-    [
-      [-26.9, 41.2, 3.3],
-      [-24, 44, 1],
-      [-8, 47, 1],
-      [2, 48, 5],
-      [9, 38, 6],
-      [13.5, 31.8, 6],
-    ],
-    MAT.yellow,
-    'sensor',
-  );
-
   // Battery: positive through the fuse, negative back to the XIAO.
   addWire(
     group,
@@ -582,16 +567,16 @@ function buildWires(): THREE.Group {
     0.42,
   );
 
-  // Battery voltage divider, thin orange wire to A0.
+  // Battery voltage: thin orange wire to the Logger HAT battery pad.
   addWire(
     group,
     [
       [24, 40, -17],
-      [20, 46, -9],
-      [0, 48, 1],
-      [-20, 46, 8],
-      [-30, 42, 6],
-      [-33, 40, 3.3],
+      [20, 47, -9],
+      [5, 54, 4],
+      [-10, 55, 13],
+      [-18, 52.5, 18],
+      [-21, 50.4, 18.2],
     ],
     MAT.orange,
     'divider',
@@ -625,13 +610,13 @@ export function createDevice(): Device {
   const lidGroup = buildLid();
   const shieldGroup = buildShield();
   const xiaoGroup = buildXiao();
-  const sht40Group = buildSht40();
+  const hatGroup = buildHat();
   const batteryGroup = buildBattery();
   const ledGroup = buildLed();
   const reedGroup = buildReed();
   const wiresGroup = buildWires();
 
-  root.add(boxGroup, lidGroup, shieldGroup, xiaoGroup, sht40Group, batteryGroup, ledGroup, reedGroup, wiresGroup);
+  root.add(boxGroup, lidGroup, shieldGroup, xiaoGroup, hatGroup, batteryGroup, ledGroup, reedGroup, wiresGroup);
 
   const parts: Part[] = [
     part(
@@ -645,7 +630,7 @@ export function createDevice(): Device {
     part(
       'box',
       'IP65 box',
-      'White weatherproof box. Holds the XIAO, battery, and sensor. The sensor sits near the bottom Gore vent; the lid has a silicone gasket.',
+      'White weatherproof box. Holds the XIAO with its Logger HAT, and the battery. The stack sits over the bottom Gore vent for now; the lid has a silicone gasket.',
       'About 100 × 68 × 50 mm',
       boxGroup,
       [0, 0, 0],
@@ -661,18 +646,18 @@ export function createDevice(): Device {
     part(
       'xiao',
       'XIAO ESP32-C6',
-      'The brain. ESP32-C6 with Wi-Fi, Thread, Bluetooth, USB-C, and a Li-ion charger. 3.3 V logic. This is the board that runs the Matter firmware.',
+      'The brain. ESP32-C6 with Wi-Fi, Thread, Bluetooth, USB-C, and a Li-ion charger. 3.3 V logic. The pre-soldered version, with tall header pins that carry the Logger HAT. This is the board that runs the Matter firmware.',
       '21 × 17.8 mm',
       xiaoGroup,
       [-12, 64, -8],
     ),
     part(
-      'sht40',
-      'SHT40 sensor',
-      'Temperature and humidity sensor. I2C address 0x44. About ±0.2 °C and ±1.8 % RH. Powered from 3.3 V.',
-      '25.4 × 17.8 mm breakout',
-      sht40Group,
-      [12, 60, 8],
+      'hat',
+      'XIAO Logger HAT',
+      'Add-on board soldered on top of the XIAO: SHT40 temperature and humidity (0x44, about ±0.2 °C and ±1.8 % RH), BH1750 light sensor (0x23), PCF8563 real-time clock (0x51), and a battery voltage divider. The sensors are powered from D10; the battery is read on D1. It sits on the warm XIAO, so the bench test measures the temperature offset.',
+      '21 × 17.8 mm board',
+      hatGroup,
+      [-12, 80, -8],
     ),
     part(
       'battery',
@@ -701,8 +686,8 @@ export function createDevice(): Device {
     part(
       'wires',
       'Wires',
-      'Colour-coded connections between the XIAO, sensor, battery, LED, and reed switch. Click a connection in the list to highlight it.',
-      '4 signal wires + power wires',
+      'Colour-coded connections between the XIAO, Logger HAT, battery, LED, and reed switch. The HAT itself needs no wires. Click a connection in the list to highlight it.',
+      'Power, LED, reed switch, and battery-voltage wires',
       wiresGroup,
       [0, 0, 0],
     ),
@@ -710,7 +695,7 @@ export function createDevice(): Device {
 
   const order: PartId[] = [
     'xiao',
-    'sht40',
+    'hat',
     'battery',
     'led',
     'reed',
@@ -732,40 +717,13 @@ export function createDevice(): Device {
 
 export const CONNECTIONS: Connection[] = [
   {
-    id: 'sensor-3v3',
-    label: 'XIAO 3V3 → SHT40 VIN',
-    detail: '3.3 V power for the sensor. Red wire.',
-    color: 0xe53935,
-    css: '#e53935',
-    group: 'sensor',
-    partIds: ['xiao', 'sht40'],
-  },
-  {
-    id: 'sensor-gnd',
-    label: 'XIAO GND → SHT40 GND',
-    detail: 'Common ground. Black wire.',
-    color: 0x111318,
-    css: '#5c6670',
-    group: 'sensor',
-    partIds: ['xiao', 'sht40'],
-  },
-  {
-    id: 'sensor-sda',
-    label: 'D4 / GPIO22 → SHT40 SDA',
-    detail: 'I2C data. Blue wire.',
-    color: 0x1e88e5,
-    css: '#1e88e5',
-    group: 'sensor',
-    partIds: ['xiao', 'sht40'],
-  },
-  {
-    id: 'sensor-scl',
-    label: 'D5 / GPIO23 → SHT40 SCL',
-    detail: 'I2C clock. Yellow wire.',
-    color: 0xf2cf3a,
-    css: '#fdd835',
-    group: 'sensor',
-    partIds: ['xiao', 'sht40'],
+    id: 'hat-pins',
+    label: 'XIAO pins → Logger HAT (soldered)',
+    detail: 'No wires. The HAT sits on the XIAO header pins and uses 3V3, GND, D4 (SDA), D5 (SCL), D10 (sensor power), D1 (battery voltage) and D0 (clock interrupt).',
+    color: 0xd4af37,
+    css: '#d4af37',
+    group: 'hat',
+    partIds: ['xiao', 'hat'],
   },
   {
     id: 'battery-positive',
@@ -805,42 +763,42 @@ export const CONNECTIONS: Connection[] = [
   },
   {
     id: 'battery-divider',
-    label: 'Battery + → 1 MΩ / 1 MΩ → A0',
-    detail: 'Voltage divider for battery percentage. Orange wire.',
+    label: 'Battery + → Logger HAT battery pad',
+    detail: 'Feeds the HAT voltage divider, which is read on D1 and switched by D10. Orange wire.',
     color: 0xfb8c00,
     css: '#fb8c00',
     group: 'divider',
-    partIds: ['battery', 'xiao'],
+    partIds: ['battery', 'hat'],
   },
 ];
 
 export const STEPS: Step[] = [
   {
-    title: 'Solder headers to the XIAO',
-    body: 'Solder the two rows of pin headers. Check for bridges between pins before powering up.',
+    title: 'Check the XIAO headers',
+    body: 'The XIAO comes with pre-soldered headers. Check for solder bridges between pins before going further.',
     mode: 'assembled',
     partIds: ['xiao'],
     focusId: 'xiao',
   },
   {
-    title: 'Solder wires to the SHT40',
-    body: 'Solder four wires to VIN, GND, SDA, and SCL. Use red, black, blue, and yellow so you cannot mix them up.',
+    title: 'Solder the Logger HAT onto the XIAO',
+    body: 'Line up the pin labels, tack two opposite corners, then solder every pad. The sensors need no wires.',
     mode: 'assembled',
-    partIds: ['sht40'],
-    focusId: 'sht40',
+    partIds: ['xiao', 'hat'],
+    focusId: 'hat',
   },
   {
-    title: 'Wire the sensor and run the bench test',
-    body: 'Connect 3V3, GND, SDA, and SCL. Power from USB and check the readings in Home Assistant before going further.',
-    mode: 'wiring',
-    partIds: ['xiao', 'sht40', 'wires'],
-    focusId: 'wires',
+    title: 'Run the bench test',
+    body: 'Power from USB, run the I2C scan (0x23, 0x44, 0x51), upload the bench sketch, check Home Assistant, and write down the temperature offset against a room thermometer.',
+    mode: 'assembled',
+    partIds: ['xiao', 'hat'],
+    focusId: 'hat',
   },
   {
     title: 'Add the battery and fuse',
-    body: 'Fit the 18650 holder, add the 1 A fuse in the positive lead, and solder the battery wires to the XIAO BAT pads.',
+    body: 'Fit the 18650 holder, add the 1 A fuse in the positive lead, solder the battery wires to the XIAO BAT pads, and wire the battery positive to the HAT battery pad for voltage readings.',
     mode: 'wiring',
-    partIds: ['battery', 'xiao', 'wires'],
+    partIds: ['battery', 'xiao', 'hat', 'wires'],
     focusId: 'battery',
   },
   {
@@ -854,14 +812,14 @@ export const STEPS: Step[] = [
     title: 'Test the low-power firmware',
     body: 'Flash the final firmware, check that it sleeps, and measure the battery current. Do not close the box yet.',
     mode: 'assembled',
-    partIds: ['xiao', 'battery'],
+    partIds: ['xiao', 'hat', 'battery'],
     focusId: 'box',
   },
   {
     title: 'Mount the electronics in the box',
-    body: 'Put the sensor over the Gore vent at the bottom. Keep the XIAO and battery at the top. Add a small desiccant pack.',
+    body: 'Mount the XIAO and HAT stack over the Gore vent. Keep the battery away from it, and add a small desiccant pack. If the bench offset was too large, move the sensor to a separate breakout on a short cable.',
     mode: 'wiring',
-    partIds: ['box', 'xiao', 'sht40', 'battery'],
+    partIds: ['box', 'xiao', 'hat', 'battery'],
     focusId: 'box',
   },
   {

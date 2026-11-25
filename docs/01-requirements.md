@@ -70,4 +70,4 @@ The project is "done" when:
 | Sun heats the sensor | Temperature reads too high | Printed radiation shield, white box, sensor away from electronics |
 | Rain/condensation | Electronics corrode | IP65 box, Gore vent, desiccant, conformal coating, drip loop |
 | Weak Thread signal | Device drops offline | Move border router, add a mains Thread router, external antenna |
-| Self-heating from XIAO/battery | Temperature offset | Keep sensor at the bottom, air gap, compare with reference |
+| Self-heating from XIAO/battery | Temperature offset | Keep sensor at the bottom, air gap, compare with reference. The Logger HAT sits on the XIAO, so measure the offset in the bench test and move the sensor off the board if needed |

@@ -4,6 +4,64 @@ This is the diary of the project. Newest entries first.
 
 ---
 
+## 2026-11-25 — Bench kit ordered
+
+### What I did
+
+- Checked whether the SHT45 could replace the SHT40. It can (same I2C address
+  `0x44`, same `Adafruit_SHT4x` library), but it costs more.
+- Tried Mouser.es. A basket with the XIAO and an SHT45 had a €25.00 FedEx
+  delivery charge, which is more than the parts.
+- Compared with Amazon.es. Genuine XIAO ESP32-C6 (€18.37) and Adafruit SHT45
+  (€22.98) cost two to three times the Mouser parts price.
+- Looked at the Seeed XIAO Logger HAT: an SHT40, a BH1750 light sensor, a
+  PCF8563 clock and a switched battery divider in one board that sits on
+  the XIAO. It is cheaper than an SHT45 breakout and gives us extras to play
+  with in this phase.
+- Ordered from Seeed Studio instead: XIAO ESP32-C6 pre-soldered (€5.99,
+  SKU 102010636) and XIAO Logger HAT (€7.99, SKU 114993446).
+- Updated the shopping list, bench guide, battery notes, sketch and I2C
+  scanner for the Logger HAT.
+- Compiled `bench.ino` and `i2c-scan.ino` for `XIAO_ESP32C6` with the ESP32
+  core 4.0.0 and Adafruit SHT4x. Both build; the bench sketch uses 88% of the
+  Huge APP partition.
+- Updated the 3D viewer: the XIAO now carries the Logger HAT, the SHT40
+  breakout and its four wires are gone, and the battery-voltage wire goes
+  to the HAT battery pad.
+
+### What worked
+
+- Seeed sells both items directly. The Mouser SHT45 PTFE listing had no
+  "unable to sell" banner for Spain either, but I did not order it.
+
+### What failed
+
+- Nothing yet. The sketch change (drive D10 HIGH before the sensors) comes
+  from the Logger HAT documentation and has not run on the real hardware.
+
+### Measurements
+
+- None yet. First targets: the temperature offset with the HAT stacked on
+  the XIAO, and the I2C scan (`0x23`, `0x44`, `0x51`).
+
+### Decisions
+
+| Topic | Decision |
+|---|---|
+| Bench sensor | XIAO Logger HAT (SHT40), soldered on the XIAO |
+| SHT45 | Not bought. Revisit after the bench test if the HAT reads too warm |
+| Outdoor sensor placement | Decided after the bench test offset is known |
+
+### Next
+
+1. Buy or find a USB-C **data** cable, and a soldering iron if needed.
+2. Solder the HAT onto the XIAO and run `firmware/tools/i2c-scan/i2c-scan.ino`.
+3. Upload `firmware/bench/bench.ino` and pair it with Home Assistant.
+4. Write down the temperature offset against a room thermometer.
+5. Decide the outdoor sensor placement, then order the outdoor kit.
+
+---
+
 ## 2026-11-07 — Starting the project
 
 ### Goal

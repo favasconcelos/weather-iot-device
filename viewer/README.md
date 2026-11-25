@@ -78,27 +78,32 @@ turn the shield, lid, wires, labels, and dimensions on or off.
 
 ## What is modelled
 
-- Seeed XIAO ESP32-C6, with USB-C, shield can, antenna area, and pin headers
-- SHT40 breakout with the sensor, header, regulator, and level shifter
+- Seeed XIAO ESP32-C6, with USB-C, shield can, antenna area, and tall header
+  pins
+- Seeed XIAO Logger HAT soldered on top of the XIAO: SHT40, BH1750 light
+  sensor, PCF8563 clock with its crystal, the divider transistor, and the
+  battery pad. It needs no wires
 - Protected 18650 cell in a holder
 - IP65 box, lid, gasket, screws, and Gore vent
 - Six-plate radiation shield with spacers and feet
 - Bi-colour LED, resistors, reed switch, and magnet
 - Colour-coded wires:
-  - red: 3V3 / battery positive
-  - black: GND / battery negative
-  - blue: SDA
-  - yellow: SCL
+  - red: battery positive
+  - black: battery negative
   - green: LED
   - purple: reed switch
-  - orange: battery voltage divider
+  - orange: battery voltage to the Logger HAT battery pad
 
 ## What is simplified
 
 - The PCB traces, exact connector shapes, and component footprints are
   simplified.
-- The XIAO and SHT40 are represented by their board outlines and main
-  components; the model is not a mechanical drawing.
+- The XIAO and the Logger HAT are represented by their board outlines and main
+  components; the model is not a mechanical drawing. The HAT pad positions
+  and the battery wiring on the real board are not checked yet.
+- The Gore vent is under the XIAO and HAT stack. If the bench test shows the
+  HAT reads too warm, the sensor will move to a separate breakout and the
+  model will change.
 - The box is a generic 100 × 68 × 50 mm IP65 enclosure.
 - The shield is an early concept: six 150 × 110 mm plates with a central
   110 × 78 mm opening. The final dimensions depend on the box you buy.

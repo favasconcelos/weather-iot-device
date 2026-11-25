@@ -5,14 +5,16 @@
 ```
 +-------------------+        Thread radio        +----------------------+       Wi-Fi / Ethernet       +---------------------+
 | Garden sensor     |  ~~~~~~~~~~~~~~~~~~~~~~~~> | Thread border router |  ~~~~~~~~~~~~~~~~~~~~~~~~> | Raspberry Pi        |
-| XIAO + SHT40      |   low power, small data     | Nest Hub 2 / ZBT-1   |   normal home network       | HA + Matter Server  |
+| XIAO + Logger HAT |   low power, small data     | Nest Hub 2 / ZBT-1   |   normal home network       | HA + Matter Server  |
 +-------------------+                             +----------------------+                             +---------------------+
 ```
 
 - **XIAO ESP32-C6** — the tiny computer. It reads the sensor, talks to the
   network, and goes to sleep.
-- **SHT40** — the thermometer and humidity sensor. It talks to the XIAO over
-  a simple two-wire connection called I2C.
+- **XIAO Logger HAT** — a small add-on board that sits on the XIAO. It has
+  the **SHT40** thermometer and humidity sensor, a light sensor, a real-time
+  clock, and a battery voltage divider. The chips talk to the XIAO over a
+  simple two-wire connection called I2C.
 - **Thread** — a low-power radio network. It is like Wi-Fi for battery devices:
   slower, but it sips power.
 - **Thread border router** — a translator. It connects the Thread network to
@@ -25,7 +27,8 @@
 ## The data path
 
 1. The XIAO wakes up.
-2. It asks the SHT40 for a temperature and humidity reading.
+2. It powers the HAT sensors and asks the SHT40 for a temperature and
+   humidity reading.
 3. It updates the Matter values.
 4. The Thread radio sends a small message to the border router.
 5. The border router forwards it to the Matter Server on the Pi.
@@ -75,7 +78,7 @@ The exact names depend on the device name you choose during pairing.
 | Matter Server | Raspberry Pi, Docker container |
 | Thread border router | Separate device on the home network (Nest Hub 2 or ZBT-1) |
 | Sensor firmware | XIAO ESP32-C6 in the garden |
-| Sensor | SHT40 on the same small board |
+| Sensor | SHT40 on the Logger HAT, stacked on the XIAO |
 
 ## Two phases
 

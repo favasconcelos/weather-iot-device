@@ -28,7 +28,8 @@ settings from `icd_app`, and a new SHT40 driver.
 ## What the final firmware does
 
 1. Boots and joins the Thread network.
-2. Reads the SHT40 every 5 minutes.
+2. Powers the Logger HAT sensors from D10 (GPIO18) and reads the SHT40
+   every 5 minutes, then switches D10 off before sleep.
 3. Updates the Matter temperature and humidity attributes.
 4. Reads the battery voltage and updates the standard Power Source cluster.
 5. Goes back to sleep.
@@ -132,13 +133,18 @@ This avoids drilling a button hole in the waterproof box.
 
 ## Battery measurement
 
-- Battery voltage divided by two with two 1 MΩ resistors, into A0 (GPIO0).
-- Add a 100 nF capacitor from A0 to GND.
+- With the Logger HAT, use its divider: drive D10 (GPIO18) HIGH, read
+  D1/A1 (GPIO1), then drive D10 LOW. It halves the battery voltage, and
+  draws current only while D10 is on.
+- Do not use D0 (GPIO0) as an input. The HAT clock's interrupt pin is on it.
+- Without the HAT, divide the voltage by two with two 1 MΩ resistors into A0
+  (GPIO0) and add a 100 nF capacitor from A0 to GND.
 - Measure at rest, not during a radio transmission.
 - Convert voltage to percent with a Li-ion curve.
 - Report both `BatPercentRemaining` and `BatVoltage`.
 
-The divider draws about 1.8 µA at 3.7 V. That is acceptable.
+The 1 MΩ divider draws about 1.8 µA at 3.7 V, which is acceptable. The
+HAT divider is switched off by D10 when not measuring.
 
 ## Build with Docker
 

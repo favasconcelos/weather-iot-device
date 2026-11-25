@@ -10,6 +10,13 @@ later, after the box is measured.
 
 ![Wiring view](screenshot-wiring.png)
 
+## Live demo
+
+<https://favasconcelos.github.io/weather-iot-device/>
+
+Deployed automatically from `main` by
+`.github/workflows/deploy-viewer.yml` whenever something under `viewer/` changes.
+
 ## Run it
 
 ```bash

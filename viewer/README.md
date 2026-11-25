@@ -39,12 +39,28 @@ runtime.
 
 ## Controls
 
-- **Drag** to rotate.
-- **Scroll** to zoom.
-- **Right-drag** to pan.
-- **Click a part** in the 3D view or in the Parts list to select it.
-- **Click a connection** to highlight those wires.
-- **Click an assembly step** to move to the relevant view.
+The same controls work on desktop, tablet, and phone.
+
+- **Drag** to rotate, **scroll** or **pinch** to zoom, **right-drag** or
+  **two-finger drag** to pan.
+- **Click or tap a part** in the 3D view, or in the **Parts** tab, to select it.
+- **Click or tap a connection** to highlight just those wires.
+- **Build guide**: press **Start** / **Next** to walk through the assembly
+  steps. The camera moves to each part and the details appear in a card.
+- **Mode switch** (bottom): Assembled, Exploded, Wiring, Print parts.
+- **View tab**: layer switches, the Explode slider, and camera buttons for
+  rotate and zoom (a one-tap alternative to dragging and pinching).
+- **Theme**: the sun/moon button switches between dark and light. The system
+  preference is used until you choose.
+- The view is stored in the address (`#mode=wiring&part=hat&step=3`), so a
+  link opens the same view.
+
+On a phone the panel is a bottom sheet. Drag its handle, or tap a tab, to
+expand it.
+
+Keyboard shortcuts: `1`–`4` switch view, `E` explode, `←` `→` previous and
+next step, `+` `-` zoom, `R` reset, `P` show or hide the panel, `Esc` clears
+the selection.
 
 ## The four views
 
@@ -55,8 +71,8 @@ runtime.
 | **Wiring** | The box in x-ray mode, with the colour-coded wires |
 | **Print parts** | The printed radiation shield, fanned out to show its shape |
 
-The **Explode** slider moves between assembled and exploded. The checkboxes
-turn the shield, lid, wires, labels, and dimensions on or off.
+The **Explode** slider moves between assembled and exploded. The View tab has
+switches for the shield, lid, wires, labels, and dimensions.
 
 ## Screenshots
 
@@ -125,6 +141,11 @@ viewer/
     ├── dimensions.ts  dimension lines
     ├── geometry.ts    reusable geometry helpers
     ├── materials.ts   colours and materials
+    ├── ground.ts      faded floor grid
+    ├── sheet.ts       phone bottom sheet
+    ├── theme.ts       dark and light theme
+    ├── url-state.ts   view stored in the address
+    ├── part-swatches.ts  colour chips in the Parts list
     ├── styles.css     UI styling
     └── types.ts       shared types
 ```

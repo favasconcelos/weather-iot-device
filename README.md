@@ -10,7 +10,7 @@ This repository documents the whole journey: parts, wiring, firmware,
 
 - [x] Decide the architecture
 - [x] Check the Home Assistant setup
-- [x] Order the bench kit (XIAO ESP32-C6 + Logger HAT, from Mouser)
+- [x] Order the bench kit (XIAO ESP32-C6 + Logger HAT, from Seeed Studio)
 - [ ] Order a Thread border router
 - [ ] Bench test over Wi-Fi
 - [ ] Low-power firmware

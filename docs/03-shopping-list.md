@@ -16,15 +16,15 @@ possible".
 
 ## Phase 1 — Bench kit (ordered)
 
-Ordered from Mouser.es on 2026-11-25:
+Ordered from [Seeed Studio](https://www.seeedstudio.com/) on 2026-11-25:
 
-| Part | Mouser SKU | Price | Why |
+| Part | Seeed SKU | Price | Why |
 |---|---|---|---|
 | Seeed XIAO ESP32-C6, pre-soldered | 102010636 | €5.99 | The tiny computer; headers already soldered |
 | Seeed XIAO Logger HAT | 114993446 | €7.99 | SHT40 temperature + humidity, BH1750 light, PCF8563 clock, battery divider |
 
-Parts total €13.98, plus Mouser's delivery charge (FedEx International
-Priority, €25.00).
+Parts total €13.98, plus delivery and any import charges (not recorded
+yet; add them here when the parcel arrives).
 
 Still needed for the bench test:
 
@@ -53,13 +53,11 @@ Still needed for the bench test:
 - The HAT runs from the XIAO's 3.3 V pin, so it needs no regulator or level
   shifter. Its sensors are switched from pin D10, so they can be off in deep
   sleep.
-- The Mouser delivery fee was larger than the parts. Genuine XIAO and
-  Adafruit SHT45 listings on Amazon.es cost two to three times the Mouser
-  price, so Mouser was still cheaper. Combine any future Mouser order into
-  one to share the delivery.
-- Some Mouser listings show "Due to government regulations, Mouser is unable
-  to sell this product in your country" for Spain. Check the product page
-  before adding a part to the basket.
+- Seeed ships from China, so expect a few weeks and possible customs
+  handling; see the notes at the end of this page.
+- Alternatives that were checked: a Mouser basket with the same XIAO had a
+  €25.00 FedEx delivery charge, and genuine XIAO and Adafruit SHT45 boards on
+  Amazon.es cost two to three times as much as Mouser's parts price.
 
 ---
 
@@ -161,10 +159,10 @@ border routers. It is common on the used market and easy to set up.
 
 | Phase | Approx. cost |
 |---|---|
-| Bench kit (ordered) | €13.98 parts + €25.00 delivery, plus a cable if you need one |
+| Bench kit (ordered) | €13.98 parts plus delivery, and a cable if you need one |
 | Outdoor kit | €65-90 |
 | Thread border router | €0-60 |
-| **Total** | **€104-189** plus a USB-C cable if needed |
+| **Total** | **€79-164** plus delivery and a USB-C cable if needed |
 
 Tools (soldering iron, multimeter, etc.) are extra if you do not already
 own them.
@@ -178,7 +176,7 @@ own them.
   online before driving.
 - **Electronics:** Mouser.es and Digi-Key have fast shipping but charge
   shipping unless the order is large (Mouser's free-shipping threshold is
-  about €75). The bench kit paid €25.00 for FedEx. Combine parts. Amazon.es
+  about €75; a small basket was quoted €25.00 for FedEx). Combine parts. Amazon.es
   is faster for generic modules but quality varies, and genuine Seeed and
   Adafruit boards cost two to three times as much.
 - **Used devices:** Wallapop and Milanuncios are the best places for a used
@@ -186,7 +184,8 @@ own them.
 - **18650 cells:** NKON (Netherlands) is reliable and ships to Spain. A local
   vape shop may also have protected cells, but check the brand and condition.
 - **Import:** Seeed Studio ships from China. Expect 2-4 weeks and possible
-  customs handling. Mouser ships Seeed parts faster, but with a delivery fee.
+  customs handling. The bench kit was ordered from Seeed directly. Mouser
+  ships Seeed parts faster, but with a delivery fee.
 - **Summer heat:** Zaragoza can exceed 40 °C. The white box and sun shield
   are not optional. Park the device in shade if possible, but the shield
   must still allow airflow.

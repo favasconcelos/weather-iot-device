@@ -9,8 +9,8 @@ This is the first "it works" milestone. No battery, no Thread, no box yet.
 
 ## 1. What you need
 
-- Seeed XIAO ESP32-C6 with pre-soldered headers (Mouser 713-102010636)
-- Seeed XIAO Logger HAT (Mouser 713-114993446)
+- Seeed XIAO ESP32-C6 with pre-soldered headers (Seeed SKU 102010636)
+- Seeed XIAO Logger HAT (Seeed SKU 114993446)
 - Soldering iron, solder and flux (the HAT is soldered onto the XIAO)
 - USB-C data cable
 - A room thermometer to compare against (optional, but useful)

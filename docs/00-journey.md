@@ -9,23 +9,24 @@ This is the diary of the project. Newest entries first.
 ### What I did
 
 - Checked whether the SHT45 could replace the SHT40. It can (same I2C address
-  `0x44`, same `Adafruit_SHT4x` library), but it costs more. Mouser's delivery
-  to Spain turned out to be €25.00 (FedEx) for the basket.
+  `0x44`, same `Adafruit_SHT4x` library), but it costs more.
+- Tried Mouser.es. A basket with the XIAO and an SHT45 had a €25.00 FedEx
+  delivery charge, which is more than the parts.
 - Compared with Amazon.es. Genuine XIAO ESP32-C6 (€18.37) and Adafruit SHT45
-  (€22.98) cost two to three times the Mouser price.
+  (€22.98) cost two to three times the Mouser parts price.
 - Looked at the Seeed XIAO Logger HAT: an SHT40, a BH1750 light sensor, a
   PCF8563 clock and a switched battery divider in one board that sits on
   the XIAO. It is cheaper than an SHT45 breakout and gives us extras to play
   with in this phase.
-- Ordered from Mouser.es: XIAO ESP32-C6 pre-soldered (€5.99, SKU 102010636)
-  and XIAO Logger HAT (€7.99, SKU 114993446).
+- Ordered from Seeed Studio instead: XIAO ESP32-C6 pre-soldered (€5.99,
+  SKU 102010636) and XIAO Logger HAT (€7.99, SKU 114993446).
 - Updated the shopping list, bench guide, battery notes, sketch and I2C
   scanner for the Logger HAT.
 
 ### What worked
 
-- Mouser accepted both items for Spain. The SHT45 PTFE listing had no "unable
-  to sell" banner either, but I did not order it.
+- Seeed sells both items directly. The Mouser SHT45 PTFE listing had no
+  "unable to sell" banner for Spain either, but I did not order it.
 
 ### What failed
 

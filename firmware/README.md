@@ -9,7 +9,7 @@ Two firmware stages:
 
 ## Bench firmware
 
-Arduino sketch for the XIAO ESP32-C6 and the SHT40 breakout.
+Arduino sketch for the XIAO ESP32-C6 and the XIAO Logger HAT (SHT40).
 It creates a Matter temperature sensor and a Matter humidity sensor, then
 updates them every 5 seconds.
 

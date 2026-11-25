@@ -160,7 +160,7 @@ const state: ViewState = {
   explodeTarget: 0,
 };
 
-const electronics = new Set(['xiao', 'sht40', 'battery', 'led', 'reed', 'wires']);
+const electronics = new Set(['xiao', 'hat', 'battery', 'led', 'reed', 'wires']);
 let cameraTween: CameraTween | null = null;
 let activeStepElement: HTMLLIElement | null = null;
 let pointerDown = { x: 0, y: 0 };

@@ -10,10 +10,10 @@ export const MAT = {
     roughness: 0.72,
     metalness: 0.08,
   }),
-  pcbPurple: new THREE.MeshStandardMaterial({
-    color: 0x5b2a82,
-    roughness: 0.72,
-    metalness: 0.08,
+  pcbBlack: new THREE.MeshStandardMaterial({
+    color: 0x16181d,
+    roughness: 0.6,
+    metalness: 0.1,
   }),
   white: new THREE.MeshStandardMaterial({
     color: 0xf3f4f2,

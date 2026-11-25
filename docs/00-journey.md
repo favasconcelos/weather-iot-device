@@ -22,6 +22,12 @@ This is the diary of the project. Newest entries first.
   SKU 102010636) and XIAO Logger HAT (€7.99, SKU 114993446).
 - Updated the shopping list, bench guide, battery notes, sketch and I2C
   scanner for the Logger HAT.
+- Compiled `bench.ino` and `i2c-scan.ino` for `XIAO_ESP32C6` with the ESP32
+  core 4.0.0 and Adafruit SHT4x. Both build; the bench sketch uses 88% of the
+  Huge APP partition.
+- Updated the 3D viewer: the XIAO now carries the Logger HAT, the SHT40
+  breakout and its four wires are gone, and the battery-voltage wire goes
+  to the HAT battery pad.
 
 ### What worked
 

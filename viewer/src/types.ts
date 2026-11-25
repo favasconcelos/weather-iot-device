@@ -5,7 +5,7 @@ export type Mode = 'assembled' | 'exploded' | 'wiring' | 'print';
 
 export type PartId =
   | 'xiao'
-  | 'sht40'
+  | 'hat'
   | 'battery'
   | 'box'
   | 'lid'
@@ -32,7 +32,7 @@ export interface Connection {
   detail: string;
   color: number;
   css: string;
-  group: 'sensor' | 'battery' | 'led' | 'reed' | 'divider';
+  group: 'hat' | 'battery' | 'led' | 'reed' | 'divider';
   partIds: PartId[];
 }
 

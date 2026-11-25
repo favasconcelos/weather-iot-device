@@ -5,7 +5,7 @@ An interactive 3D model of the sensor is in [`viewer/`](../viewer/README.md).
 It runs in the browser with Three.js and shows:
 
 - the XIAO ESP32-C6
-- the SHT40 sensor
+- the XIAO Logger HAT (SHT40, light sensor, clock) stacked on the XIAO
 - the 18650 battery and holder
 - the IP65 box, lid, gasket, and Gore vent
 - the 3D-printed radiation shield
@@ -48,10 +48,11 @@ Then open <http://127.0.0.1:5173/>.
 
 ## Important
 
-The viewer models the outdoor concept with a separate SHT40 breakout at the
-bottom of the box. It does not show the Logger HAT that the bench kit uses.
-The sensor placement in the final build depends on the bench-test offset; see
-[Enclosure](09-enclosure.md#vent-and-sensor-placement).
+The viewer shows the XIAO with the Logger HAT soldered on top, over the Gore
+vent. The sensor placement in the final build depends on the bench-test
+offset; see [Enclosure](09-enclosure.md#vent-and-sensor-placement). If the
+HAT reads too warm, the sensor moves to a separate breakout and the viewer
+will change.
 
 This is a **concept model**, not a manufacturing CAD file. The dimensions are
 approximate. The final STL/STEP files for the enclosure will be created after
@@ -68,7 +69,7 @@ The model is intentionally simple:
 
 The project has several parts that are hard to picture from a text list:
 
-- the sensor sits at the bottom, over the vent
+- the sensor sits on the HAT, on top of the XIAO, over the vent
 - the battery is large and needs its own space
 - the XIAO's antenna must stay away from metal
 - the lid gasket is a separate seal

@@ -3,6 +3,8 @@ import type { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
 export type Mode = 'assembled' | 'exploded' | 'wiring' | 'print';
 
+export type Theme = 'dark' | 'light';
+
 export type PartId =
   | 'xiao'
   | 'hat'

@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import { EDGE_MATERIALS } from './geometry';
+import type { Theme } from './types';
 
 /**
  * Shared materials. The selection highlight uses a Box3Helper rather than
@@ -124,6 +126,32 @@ export const MAT = {
     metalness: 0.1,
   }),
 } as const;
+
+const GLASS_TINT = {
+  dark: { box: new THREE.Color(0xf8f9f7), lid: new THREE.Color(0xf7f8f6) },
+  light: { box: new THREE.Color(0x6d8394), lid: new THREE.Color(0x7d909f) },
+};
+
+/**
+ * Retints the translucent box and lid, and the outlines, so they stay visible
+ * on a light backdrop. Opaque parts keep their real colours in both themes.
+ */
+export function applyMaterialTheme(theme: Theme): void {
+  MAT.box.color.copy(GLASS_TINT[theme].box);
+  MAT.lid.color.copy(GLASS_TINT[theme].lid);
+
+  for (const material of EDGE_MATERIALS) {
+    const base = material.userData.base as { color: THREE.Color; opacity: number };
+    if (theme === 'light') {
+      // Pale outlines vanish on a light backdrop; pull them toward slate.
+      material.color.copy(base.color).lerp(new THREE.Color(0x2c3b48), 0.7);
+      material.opacity = Math.min(1, base.opacity * 2);
+    } else {
+      material.color.copy(base.color);
+      material.opacity = base.opacity;
+    }
+  }
+}
 
 export const WIRE_MATERIALS: Record<number, THREE.MeshStandardMaterial> = {
   0xe53935: MAT.red,

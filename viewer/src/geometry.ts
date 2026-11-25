@@ -116,15 +116,19 @@ export function label(text: string, className = 'part-label'): CSS2DObject {
   return object;
 }
 
+/** Outline materials, kept so the theme can recolour them. */
+export const EDGE_MATERIALS: THREE.LineBasicMaterial[] = [];
+
 export function addEdges(
   mesh: THREE.Mesh,
   color = 0xa8b5c2,
   opacity = 0.28,
 ): void {
-  const edges = new THREE.LineSegments(
-    new THREE.EdgesGeometry(mesh.geometry, 24),
-    new THREE.LineBasicMaterial({ color, transparent: true, opacity }),
-  );
+  const material = new THREE.LineBasicMaterial({ color, transparent: true, opacity });
+  material.userData.base = { color: new THREE.Color(color), opacity };
+  EDGE_MATERIALS.push(material);
+
+  const edges = new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry, 24), material);
   edges.raycast = () => undefined;
   mesh.add(edges);
 }

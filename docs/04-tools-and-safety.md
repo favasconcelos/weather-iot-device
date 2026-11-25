@@ -10,8 +10,8 @@
 - Small wire cutters and wire strippers
 - Tweezers
 - Multimeter
-- Breadboard and jumper wires
 - USB-C data cable
+- Breadboard and jumper wires (optional; the Logger HAT needs no wiring)
 - Helping hands or a small clamp
 
 ### For the outdoor build
@@ -69,7 +69,10 @@ abused. Follow these rules.
   charger. The XIAO is designed for USB + battery, but check the wiring.
 - Do not short 3V3 to GND. Check with a multimeter before powering up.
 - Touch a grounded metal object before handling the board (basic ESD care).
-- The XIAO's pins are 3.3 V logic. The SHT40 breakout is 3.3 V compatible.
+- The XIAO's pins are 3.3 V logic. The Logger HAT runs from 2.4 to 3.6 V, so
+  never connect 5 V to it.
+- The Logger HAT is soldered on top of the XIAO. Tack two opposite corners
+  first, and check for bridges between pins before powering up.
 
 ## Safety: waterproofing
 

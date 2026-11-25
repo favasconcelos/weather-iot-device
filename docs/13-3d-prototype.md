@@ -48,6 +48,11 @@ Then open <http://127.0.0.1:5173/>.
 
 ## Important
 
+The viewer models the outdoor concept with a separate SHT40 breakout at the
+bottom of the box. It does not show the Logger HAT that the bench kit uses.
+The sensor placement in the final build depends on the bench-test offset; see
+[Enclosure](09-enclosure.md#vent-and-sensor-placement).
+
 This is a **concept model**, not a manufacturing CAD file. The dimensions are
 approximate. The final STL/STEP files for the enclosure will be created after
 the exact IP65 box is measured.

@@ -14,38 +14,52 @@ possible".
 
 ---
 
-## Phase 1 — Bench kit (order now)
+## Phase 1 — Bench kit (ordered)
+
+Ordered from Mouser.es on 2026-11-25:
+
+| Part | Mouser SKU | Price | Why |
+|---|---|---|---|
+| Seeed XIAO ESP32-C6, pre-soldered | 102010636 | €5.99 | The tiny computer; headers already soldered |
+| Seeed XIAO Logger HAT | 114993446 | €7.99 | SHT40 temperature + humidity, BH1750 light, PCF8563 clock, battery divider |
+
+Parts total €13.98, plus Mouser's delivery charge (FedEx International
+Priority, €25.00).
+
+Still needed for the bench test:
 
 | Part | Why | Approx. price | Where to look |
 |---|---|---|---|
-| Seeed XIAO ESP32-C6 | The tiny computer | €8-12 | [Seeed Studio](https://www.seeedstudio.com/Seeed-Studio-XIAO-ESP32C6-p-5884.html), Amazon.es, Mouser.es, Digi-Key |
-| SHT40 breakout | Temperature + humidity sensor | €6-10 | Adafruit [#4885](https://www.adafruit.com/product/4885), Mouser.es, Digi-Key, Amazon.es |
-| Breadboard, 400 points | Temporary wiring | €4-6 | Amazon.es, PCComponentes, local electronics shop |
-| Jumper wires, male-female | Connect the board to the sensor | €3-5 | Amazon.es, PCComponentes |
-| USB-C **data** cable | Power and programming | €5-8 | Amazon.es, PCComponentes |
-| Male pin headers | Solder to the XIAO so it fits the breadboard | €2 | Amazon.es, local electronics shop |
-| Multimeter (optional but useful) | Check voltage, current, continuity | €15-25 | Amazon.es, Leroy Merlin, PCComponentes |
+| USB-C **data** cable | Power and programming | €5-8 (or use one you own) | Amazon.es, PCComponentes |
+| Soldering iron, solder, flux | The HAT is soldered onto the XIAO | You may already own these | See [Tools and safety](04-tools-and-safety.md) |
+| Room thermometer (optional) | Compare against the SHT40 | €3-6 | Amazon.es, local shop |
+| Multimeter (optional but useful) | Check continuity and voltage | €15-25 | Amazon.es, Leroy Merlin, PCComponentes |
+| Breadboard + jumper wires (optional) | Only if you want to wire extra parts later | €7-12 | Amazon.es, PCComponentes |
 
 **Search terms for Amazon.es**
 
-- `Seeed XIAO ESP32C6`
-- `Adafruit SHT40` or `SHT40 breakout`
-- `protoboard 400 puntos`
-- `cables dupont macho hembra`
 - `cable USB-C datos`
-- `tira de pines macho 2.54mm`
+- `termómetro de interior`
 - `multimetro digital`
+- `protoboard 400 puntos` and `cables dupont macho hembra` (optional)
 
 **Notes**
 
-- The XIAO usually ships without pin headers. You need to solder them.
-- The Adafruit SHT40 breakout has a 3.3 V regulator and level shifter.
-  That is fine for the bench. For the final battery build it wastes a little
-  standby current; we may power it from a GPIO or use a bare sensor later.
-- Buy two SHT40 breakouts if the shipping is high. A spare is useful while
-  debugging.
-- If you buy from Mouser or Digi-Key, combine the XIAO, sensor, headers,
-  resistors, and LED in one order to make the shipping worth it.
+- The XIAO is the pre-soldered version, so you do not need separate pin
+  headers.
+- The Logger HAT is not a breakout on wires. It is soldered on the XIAO, so
+  the sensor ends up against the board that warms it. Plan to measure the
+  offset in the bench test; see [Bench test](05-bench-test.md).
+- The HAT runs from the XIAO's 3.3 V pin, so it needs no regulator or level
+  shifter. Its sensors are switched from pin D10, so they can be off in deep
+  sleep.
+- The Mouser delivery fee was larger than the parts. Genuine XIAO and
+  Adafruit SHT45 listings on Amazon.es cost two to three times the Mouser
+  price, so Mouser was still cheaper. Combine any future Mouser order into
+  one to share the delivery.
+- Some Mouser listings show "Due to government regulations, Mouser is unable
+  to sell this product in your country" for Spain. Check the product page
+  before adding a part to the basket.
 
 ---
 
@@ -130,7 +144,11 @@ border routers. It is common on the used market and easy to set up.
 ## Do not buy yet
 
 - Custom PCB (JLCPCB/PCBWay). Only after version 1 works.
-- Bare SHT40 sensor. Hard to hand-solder; use the breakout for now.
+- A separate SHT45 breakout (Adafruit #5665, or #6174 with a PTFE membrane).
+  Decide after the bench test: if the Logger HAT reads too warm, a
+  separate sensor on a short cable is the fix. It is the same I2C driver
+  (`0x44`) and about €12-23 depending on where you buy it.
+- Bare SHT40 sensor. Hard to hand-solder; the Logger HAT already has one.
 - Expensive power profiler (Joulescope, Otii, Nordic PPK2). We can estimate
   with a multimeter first.
 - 3D printer. Use your friend's printer.
@@ -143,10 +161,10 @@ border routers. It is common on the used market and easy to set up.
 
 | Phase | Approx. cost |
 |---|---|
-| Bench kit | €30-50 |
+| Bench kit (ordered) | €13.98 parts + €25.00 delivery, plus a cable if you need one |
 | Outdoor kit | €65-90 |
 | Thread border router | €0-60 |
-| **Total** | **€95-200** |
+| **Total** | **€104-189** plus a USB-C cable if needed |
 
 Tools (soldering iron, multimeter, etc.) are extra if you do not already
 own them.
@@ -159,14 +177,16 @@ own them.
   the IP65 box, cable gland, silicone, screws, and fuse holder. Check stock
   online before driving.
 - **Electronics:** Mouser.es and Digi-Key have fast shipping but charge
-  shipping unless the order is large. Combine parts. Amazon.es is faster for
-  generic modules but quality varies.
+  shipping unless the order is large (Mouser's free-shipping threshold is
+  about €75). The bench kit paid €25.00 for FedEx. Combine parts. Amazon.es
+  is faster for generic modules but quality varies, and genuine Seeed and
+  Adafruit boards cost two to three times as much.
 - **Used devices:** Wallapop and Milanuncios are the best places for a used
   Nest Hub 2. Ask for the original power adapter.
 - **18650 cells:** NKON (Netherlands) is reliable and ships to Spain. A local
   vape shop may also have protected cells, but check the brand and condition.
 - **Import:** Seeed Studio ships from China. Expect 2-4 weeks and possible
-  customs handling. If you want it faster, check Mouser.es or Amazon.es.
+  customs handling. Mouser ships Seeed parts faster, but with a delivery fee.
 - **Summer heat:** Zaragoza can exceed 40 °C. The white box and sun shield
   are not optional. Park the device in shade if possible, but the shield
   must still allow airflow.

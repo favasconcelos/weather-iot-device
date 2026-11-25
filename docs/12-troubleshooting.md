@@ -22,16 +22,24 @@
 
 ### `SHT40 not found`
 
-- Check 3V3 to VIN, GND to GND, D4 to SDA, D5 to SCL.
-- Do not power the sensor from 5 V.
-- Run `firmware/tools/i2c-scan/i2c-scan.ino`; the sensor should appear at `0x44`.
-- Check the solder joints on the headers.
-- Try another SHT40 breakout.
+- Check the solder joints between the Logger HAT and the XIAO pins, especially
+  3V3, GND, D4, D5 and D10.
+- Make sure the HAT is the right way round, with pin labels over matching pins.
+- The sensors are powered from D10 (GPIO18). The sketch drives it HIGH; make
+  sure you did not change it.
+- Do not power the HAT from 5 V.
+- Run `firmware/tools/i2c-scan/i2c-scan.ino`; with the HAT you should see
+  `0x23`, `0x44` and `0x51`. If you see `0x51` but not `0x23` or `0x44`, the
+  sensor power (D10) may not be reaching them.
+- Reflow the pads with fresh flux. Bridges and cold joints are the usual cause.
 
 ### Temperature or humidity is wrong
 
 - Breathe on the sensor; both values should move.
-- Keep the sensor away from the XIAO and the USB cable; they warm it.
+- Keep the sensor away from the XIAO and the USB cable; they warm it. The
+  Logger HAT sits directly on the XIAO, so expect an offset in the bench
+  test, especially after the board has been running Wi-Fi for a while.
+  Write the offset down.
 - Wait a few minutes after power-up for the reading to settle.
 - Compare with a known thermometer; note the offset.
 - The SHT40 is accurate to about ±0.2 °C and ±1.8 % RH, but self-heating
@@ -130,7 +138,7 @@ Google's Matter setup may reject an uncertified device. Options:
 - Check the signal strength; a weak link causes retries.
 - Check the LED; it should be off.
 - Check the battery divider; it should draw only a few µA.
-- Check the sensor breakout's regulator; some breakouts draw tens of µA.
+- Check that D10 is driven LOW before sleep (the Logger HAT sensors and divider are switched by it), and check the regulator on any separate sensor breakout; some draw tens of µA.
 - If needed, report every 10-15 minutes instead of 5.
 
 ### The device resets when the radio transmits
@@ -186,7 +194,7 @@ Google's Matter setup may reject an uncertified device. Options:
 - Water may be on the sensor.
 - Dry the sensor and check the PTFE membrane.
 - Add a drip shield above the vent.
-- If it persists, the sensor may be damaged; replace the breakout.
+- If it persists, the sensor may be damaged; replace the Logger HAT or the breakout.
 
 ### The LED is not visible
 

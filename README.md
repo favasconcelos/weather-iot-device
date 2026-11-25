@@ -10,7 +10,7 @@ This repository documents the whole journey: parts, wiring, firmware,
 
 - [x] Decide the architecture
 - [x] Check the Home Assistant setup
-- [ ] Order the bench kit
+- [x] Order the bench kit (XIAO ESP32-C6 + Logger HAT, from Mouser)
 - [ ] Order a Thread border router
 - [ ] Bench test over Wi-Fi
 - [ ] Low-power firmware
@@ -19,7 +19,7 @@ This repository documents the whole journey: parts, wiring, firmware,
 
 ## The short version
 
-1. A tiny board (Seeed XIAO ESP32-C6) reads a Sensirion SHT40 sensor.
+1. A tiny board (Seeed XIAO ESP32-C6) reads a Sensirion SHT40 sensor on the Seeed XIAO Logger HAT.
 2. It sends temperature and humidity to Home Assistant.
 3. The final version uses Thread (low power) so it can run on a battery.
 4. A Google Nest Hub (2nd gen) or similar acts as the Thread border router.
@@ -32,6 +32,7 @@ This repository documents the whole journey: parts, wiring, firmware,
 - **Thread border router:** not owned yet. Plan: a used Google Nest Hub (2nd gen), or a Home Assistant Connect ZBT-1.
 - **Battery:** protected 18650 recommended for simplicity. A flat LiPo is the smaller alternative.
 - **Version 1:** off-the-shelf modules, no custom circuit board, no custom case.
+- **Bench sensor:** the Seeed XIAO Logger HAT (SHT40, light sensor, clock, battery divider), soldered on the XIAO. If it reads too warm because of the XIAO underneath, the outdoor build uses a separate sensor on a short cable.
 - **Bench test:** Wi-Fi, USB powered. **Final:** Thread, battery powered.
 
 ## Start here
@@ -60,6 +61,7 @@ This repository documents the whole journey: parts, wiring, firmware,
 - **Matter Server** — the Home Assistant service that controls Matter devices.
 - **MCU** — the tiny computer on the board.
 - **SHT40** — the temperature and humidity sensor.
+- **Logger HAT** — the small add-on board that carries the SHT40, a light sensor, a clock, and a battery divider.
 - **PCB** — a custom circuit board. Not needed for version 1.
 - **STL** — the file you give a 3D printer. Like a PDF for printing.
 - **STEP** — an editable 3D model file.

@@ -72,7 +72,9 @@ turn the shield, lid, wires, labels, and dimensions on or off.
 ## What is modelled
 
 - Seeed XIAO ESP32-C6, with USB-C, shield can, antenna area, and pin headers
-- SHT40 breakout with the sensor, header, regulator, and level shifter
+- SHT40 breakout with the sensor, header, regulator, and level shifter (the
+  outdoor concept; the bench test uses the Logger HAT instead, which is not
+  modelled yet)
 - Protected 18650 cell in a holder
 - IP65 box, lid, gasket, screws, and Gore vent
 - Six-plate radiation shield with spacers and feet

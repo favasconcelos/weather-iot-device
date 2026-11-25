@@ -42,7 +42,7 @@ This repository documents the whole journey: parts, wiring, firmware,
 - [Shopping list for Spain](docs/03-shopping-list.md)
 - [Tools and safety](docs/04-tools-and-safety.md)
 - [Bench test, step by step](docs/05-bench-test.md)
-- [3D prototype viewer](viewer/README.md)
+- [3D prototype viewer](https://favasconcelos.github.io/weather-iot-device/) ([source and docs](viewer/README.md))
 - [Final low-power firmware](docs/06-final-firmware.md)
 - [Home Assistant setup](docs/07-home-assistant.md)
 - [Battery and power](docs/08-battery.md)

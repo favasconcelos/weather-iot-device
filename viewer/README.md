@@ -55,8 +55,9 @@ The same controls work on desktop, tablet, and phone.
 - The view is stored in the address (`#mode=wiring&part=hat&step=3`), so a
   link opens the same view.
 
-On a phone the panel is a bottom sheet. Drag its handle, or tap a tab, to
-expand it.
+On a phone the panel is a bottom sheet. Tap a tab to expand it, drag its
+header, or swipe the list up or down past its scroll edge, to resize it between
+three heights. The 3D view only takes touches above the sheet.
 
 Keyboard shortcuts: `1`–`4` switch view, `E` explode, `←` `→` previous and
 next step, `+` `-` zoom, `R` reset, `P` show or hide the panel, `Esc` clears

@@ -1111,6 +1111,10 @@ input[type="range"]:active::-webkit-slider-thumb {
     padding: 0;
     border: 0;
     background: transparent;
+  }
+
+  /* Everything above the list drags the sheet; only the list scrolls natively. */
+  #drawer > :not(.tab-panels) {
     touch-action: none;
   }
 

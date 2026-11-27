@@ -86,6 +86,11 @@ Take the holder to the shop if you can.
 4. Keep the XIAO and battery at the top, with an air gap.
 5. Do not cover the sensor with foam or tape.
 
+**Open question:** the Logger HAT puts the SHT40 on top of the XIAO, which
+conflicts with step 4. The bench test measures how much the XIAO warms it.
+If the offset is too large, move the SHT40 to a separate breakout on a short
+cable and keep the HAT only for the clock and the battery divider.
+
 A Gore vent lets air pressure equalise and lets water vapour escape, while
 keeping liquid water out. This reduces condensation and keeps the humidity
 reading honest.

@@ -3,20 +3,19 @@
  *
  * Hardware:
  *   Seeed XIAO ESP32-C6
- *   Sensirion SHT40 breakout (Adafruit #4885 or similar)
+ *   Seeed XIAO Logger HAT (Sensirion SHT40 + BH1750 + PCF8563 RTC)
  *
- * Wiring:
- *   XIAO 3V3  -> SHT40 VIN/VCC
- *   XIAO GND  -> SHT40 GND
- *   XIAO D4   -> SHT40 SDA   (GPIO22)
- *   XIAO D5   -> SHT40 SCL   (GPIO23)
+ * The HAT sits on the XIAO pins, so there are no wires:
+ *   D4 (GPIO22)  SDA   shared I2C bus: SHT40 0x44, BH1750 0x23, RTC 0x51
+ *   D5 (GPIO23)  SCL
+ *   D10 (GPIO18) powers the HAT sensors; it must be HIGH before they are used
  *
  * This sketch is intentionally simple:
  *   - Matter over Wi-Fi (USB powered)
  *   - temperature + humidity endpoints
  *   - one reading every 5 seconds
  *
- * The final outdoor firmware uses Thread and reports every 1-2 hours.
+ * The final window firmware uses Thread and reports every 1-2 hours.
  */
 
 #include <Arduino.h>
@@ -26,6 +25,7 @@
 
 static const int I2C_SDA = 22;
 static const int I2C_SCL = 23;
+static const int SENSOR_POWER = 18;
 
 MatterTemperatureSensor temperatureSensor;
 MatterHumiditySensor humiditySensor;
@@ -49,10 +49,14 @@ void setup()
   Serial.println();
   Serial.println("Window sensor bench test");
 
+  pinMode(SENSOR_POWER, OUTPUT);
+  digitalWrite(SENSOR_POWER, HIGH);
+  delay(20);
+
   Wire.begin(I2C_SDA, I2C_SCL);
 
   if (!sht4.begin(&Wire)) {
-    Serial.println("SHT40 not found. Check wiring.");
+    Serial.println("SHT40 not found. Check the Logger HAT solder joints.");
   } else {
     Serial.println("SHT40 found.");
   }

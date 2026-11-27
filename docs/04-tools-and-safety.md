@@ -10,11 +10,11 @@
 - Small wire cutters and wire strippers
 - Tweezers
 - Multimeter
-- Breadboard and jumper wires
 - USB-C data cable
+- Breadboard and jumper wires (optional; the Logger HAT needs no wiring)
 - Helping hands or a small clamp
 
-### For the outdoor build
+### For the window build
 
 - Drill with 3-12 mm bits (for the vent, LED, and cable gland)
 - Step drill bit is easier for plastic
@@ -70,7 +70,10 @@ abused. Follow these rules.
   charger. The XIAO is designed for USB + battery, but check the wiring.
 - Do not short 3V3 to GND. Check with a multimeter before powering up.
 - Touch a grounded metal object before handling the board (basic ESD care).
-- The XIAO's pins are 3.3 V logic. The SHT40 breakout is 3.3 V compatible.
+- The XIAO's pins are 3.3 V logic. The Logger HAT runs from 2.4 to 3.6 V, so
+  never connect 5 V to it.
+- The Logger HAT is soldered on top of the XIAO. Tack two opposite corners
+  first, and check for bridges between pins before powering up.
 
 ## Safety: waterproofing
 
@@ -84,15 +87,17 @@ abused. Follow these rules.
 
 ## Safety: Home Assistant
 
-- Do not factory reset the Anker Solix or other working devices.
+- Do not factory reset the eufy robot vacuum or other working devices.
 - Only reset the new sensor.
 - Back up the Matter Server data before adding a new device or changing the
   Docker network.
 - Do not change the Docker network while the Matter devices are working.
-- The Anker Solix is a Wi-Fi Matter device. It can keep working while you add
-  Thread, but verify it after the network change.
+- The eufy robot vacuum is a Wi-Fi Matter device. It can keep working while
+  you add Thread, but verify it after the network change.
 
 ## Safety: Thread border router
+
+The border router is not bought yet. This applies when you set up the ZBT-2.
 
 - The ZBT-2 runs one protocol at a time. Flash it to Thread firmware; do not
   expect Zigbee and Thread at the same time.

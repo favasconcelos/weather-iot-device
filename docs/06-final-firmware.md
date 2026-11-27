@@ -29,18 +29,14 @@ Two official examples are the base:
 - [Sensors example](https://github.com/espressif/esp-matter/tree/main/examples/sensors)
   — creates a temperature sensor endpoint and a humidity sensor endpoint.
 
-A useful field report from a similar battery-powered ESP32-C6 sensor is
-[`vavallee/homecadia`](https://github.com/vavallee/homecadia). It documents the
-current measurements and the traps, even though it uses an e-ink display and
-a different enclosure.
-
 We will combine them: the sensor endpoints from `sensors`, the sleep/power
 settings from `icd_app`, and a new SHT40 driver.
 
 ## What the final firmware does
 
 1. Boots and joins the Thread network.
-2. Reads the SHT40 every 1-2 hours.
+2. Powers the Logger HAT sensors from D10 (GPIO18), reads the SHT40 every
+   1-2 hours, then switches D10 off before sleep.
 3. Updates the Matter temperature and humidity attributes.
 4. Reads the battery voltage and updates the standard Power Source cluster.
 5. Goes back to sleep.
@@ -83,8 +79,6 @@ firmware/final/
     ├── app_main.cpp
     ├── sht4x.c
     ├── sht4x.h
-    ├── sensor_power.c
-    ├── sensor_power.h
     ├── led.c
     ├── led.h
     ├── battery.c
@@ -111,18 +105,17 @@ use a small driver so we control the timing and the power.
 
 ## Sensor power
 
-The Adafruit SHT40 breakout has a 3.3 V regulator and level shifters. They
-can draw tens of microamps continuously, which is significant over a year.
+The Logger HAT switches its sensors and battery divider from D10 (GPIO18).
+Drive D10 HIGH, wait about 20 ms for the sensors to boot, take the reading,
+then drive D10 LOW before sleep. The clock stays powered, but it draws only
+about 0.25 µA.
 
-For the final build, do one of these:
+If the bench test shows the HAT reads too warm, the fallback is a separate
+SHT45 breakout on a short cable. Its regulator and level shifters can draw
+tens of microamps continuously, so power it from a GPIO (or a small
+P-channel MOSFET) and turn it on only for the measurement.
 
-- Power the breakout from a GPIO (or a small P-channel MOSFET) and turn it on
-  only for the measurement, or
-- Use a bare SHT40 with 4.7 kΩ I2C pull-ups and a 100 nF decoupling capacitor.
-
-Add a short delay after powering the sensor before reading it, and turn it
-off again after the reading. Measure the standby current with the sensor
-powered down.
+Measure the standby current with the sensors powered down.
 
 ## Sleep and power settings
 
@@ -179,15 +172,18 @@ This avoids drilling a button hole in the waterproof box.
 
 ## Battery measurement
 
-- Battery voltage divided by two with two 1 MΩ resistors, into A0 (GPIO0).
-- Add a 100 nF capacitor from A0 to GND.
+- With the Logger HAT, use its divider: drive D10 (GPIO18) HIGH, read
+  D1/A1 (GPIO1), then drive D10 LOW. It halves the battery voltage, and
+  draws current only while D10 is on.
+- Do not use D0 (GPIO0) as an input. The HAT clock's interrupt pin is on it.
+- Without the HAT, divide the voltage by two with two 1 MΩ resistors into A0
+  (GPIO0) and add a 100 nF capacitor from A0 to GND.
 - Measure at rest, not during a radio transmission.
 - Convert voltage to percent with a Li-ion curve.
 - Report both `BatPercentRemaining` and `BatVoltage`.
 
-The divider draws about 1.8 µA at 3.7 V. That is acceptable. If you want to
-remove even that, switch the bottom of the divider with a GPIO and only
-enable it during the measurement.
+The 1 MΩ divider draws about 1.8 µA at 3.7 V, which is acceptable. The
+HAT divider is switched off by D10 when not measuring.
 
 ## Expected battery drain
 
@@ -233,7 +229,7 @@ docker run --rm -it --device=/dev/ttyACM0 \
 ## Test plan
 
 - [ ] Builds without warnings.
-- [ ] Joins Thread through the ZBT-2 + OTBR and appears in Home Assistant.
+- [ ] Joins Thread and appears in Home Assistant.
 - [ ] Temperature and humidity update every 1-2 hours.
 - [ ] Battery percentage and voltage appear in Home Assistant.
 - [ ] LED patterns work.

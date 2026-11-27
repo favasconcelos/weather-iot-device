@@ -1,8 +1,9 @@
 # Thread border router setup (ZBT-2 + Docker OTBR)
 
-This is the detailed setup for the chosen border router: a **Home Assistant
+This is the detailed setup for the planned border router: a **Home Assistant
 Connect ZBT-2** USB radio plus a standalone **OpenThread Border Router
-(OTBR)** container on the Raspberry Pi.
+(OTBR)** container on the Raspberry Pi. The radio is not ordered yet; this
+page is here so the setup is ready when it arrives.
 
 The short version: the ZBT-2 is only a radio. OTBR is the software that turns
 it into a border router. Home Assistant and `matter-server` must be able to
@@ -277,8 +278,8 @@ Update the Home Assistant Matter integration URL to:
 ws://<pi-ip>:5580/ws
 ```
 
-Open Home Assistant at `http://<pi-ip>:8123`, then check that the Anker Solix
-is still present. If it is missing, check the Matter Server logs before
+Open Home Assistant at `http://<pi-ip>:8123`, then check that the eufy robot
+vacuum is still present. If it is missing, check the Matter Server logs before
 changing anything else.
 
 ---
@@ -372,7 +373,7 @@ networking instead.
 | Thread integration empty | mDNS discovery failed | Restart HA; check both are on host or both on macvlan |
 | Device joins but is unreachable | Missing IPv6 route or ULA source problem | Check `ip -6 route` in `matter-server`; see Option B |
 | Commissioning says "Network is unreachable" | Docker IPv6 or macvlan ULA issue | Use host networking for all three |
-| Anker Wi-Fi device disappeared | Matter Server data or network change | Check logs; restore backup; do not factory reset the Anker |
+| eufy Wi-Fi device disappeared | Matter Server data or network change | Check logs; restore backup; do not factory reset the vacuum |
 | Weak signal at the window | Distance, metal, or interference | Move the Pi/ZBT-2, add a mains Thread router, external antenna |
 
 Useful commands:

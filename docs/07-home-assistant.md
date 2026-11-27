@@ -9,14 +9,17 @@ From the files on the Raspberry Pi:
 - Matter runs in a separate container (`matter-server`), at
   `192.168.1.239:5580`.
 - Both are on a `macvlan` Docker network.
-- The Matter Server has one device: an **Anker Solix** power station
-  (model `2BAVS-AB6031X-44PE`), connected over **Wi-Fi**.
+- The Matter Server has one device: an **eufy robot vacuum**, connected over
+  **Wi-Fi**.
 - There is no USB Thread radio and no OpenThread Border Router.
 - The Pi's IPv6 routing table has no Thread route.
 
 This is why a Wi-Fi Matter device works today, but a Thread device cannot.
-The Anker device does not need Thread, and it should keep working after the
+The eufy device does not need Thread, and it should keep working after the
 changes below.
+
+The border router is **not bought yet**. This page is the plan for when it
+arrives; nothing here is urgent until then.
 
 ## Target setup
 
@@ -70,8 +73,9 @@ on macvlan.
 
 ## The border router: ZBT-2
 
-The chosen part is the **Home Assistant Connect ZBT-2**. The ZBT-1 is
-discontinued; a used one still works if you already have it.
+The preferred part is the **Home Assistant Connect ZBT-2**. It is not
+ordered yet. The ZBT-1 is discontinued; a used one still works if you
+already have it.
 
 Summary of the setup (details in
 [the border router guide](14-thread-border-router.md)):
@@ -164,7 +168,7 @@ Also back up:
 - the `matter-server` credentials directory.
 
 Do not change the Docker network or the Matter Server IP while devices are
-working. Change one thing, restart, and verify the Anker device before
+working. Change one thing, restart, and verify the eufy device before
 continuing.
 
 ## Changing matter-server to host networking
@@ -181,8 +185,8 @@ Only if you chose Option A.
    - start the containers.
 4. In Home Assistant, edit the Matter integration URL to
    `ws://<pi-ip>:5580/ws`.
-5. Restart Home Assistant and check that the Anker Solix is still present and
-   controllable.
+5. Restart Home Assistant and check that the eufy robot vacuum is still
+   present and controllable.
 6. Continue with the OTBR container.
 
 If Home Assistant stays on macvlan, do not do this. Use Option B instead.

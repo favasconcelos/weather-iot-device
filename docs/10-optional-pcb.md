@@ -9,6 +9,9 @@ A custom board:
 - replaces the breadboard and jumper wires with a clean board
 - makes the sensor placement and battery connection reliable
 - can put the SHT40 on the board instead of a breakout
+- can copy the Logger HAT idea (the design is open source, MIT licensed, at
+  [potblitd/XIAO-log](https://github.com/potblitd/XIAO-log)): sensors powered
+  from a GPIO and a switched battery divider
 - looks better and fits a smaller box
 
 It is not required for a working device.

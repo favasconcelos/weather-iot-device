@@ -88,9 +88,10 @@ ageing, plan for **12-18 months**, not 33.
 |---|---|---|
 | XIAO light sleep + Thread poll | 100-300 µA | The dominant load; depends on the ICD settings |
 | SHT40 measurement | ~0.5 mA for ~10 ms every 1-2 h | Negligible average |
-| SHT40 breakout regulator | Tens of µA, continuously | Significant over a year; power-gate it or use a bare sensor |
+| Separate SHT40 breakout regulator | Tens of µA, continuously | Only if the HAT is replaced; power-gate it or use a bare sensor |
 | LED | 0 mA | Off by default |
-| Battery divider (1 MΩ + 1 MΩ) | ~1.8 µA | Acceptable |
+| Battery divider (1 MΩ + 1 MΩ) | ~1.8 µA | Acceptable; not needed with the Logger HAT |
+| Logger HAT (clock only, sensors off) | ~0.25 µA | The clock is always on; the sensors and divider are switched by D10 |
 | Regulator / charger quiescent | 5-20 µA | Depends on the board |
 | Radio transmit bursts | ~20-30 mA for a few ms | Small average |
 
@@ -156,6 +157,26 @@ module with a USB-C input, and keep the protection and fuse. Do not connect a
 random 5 V supply directly to the cell.
 
 ## Battery voltage measurement
+
+### With the Logger HAT
+
+The Logger HAT has a battery voltage divider that is switched by D10
+(GPIO18):
+
+1. Wire the battery positive to the HAT's battery pad. Check Seeed's product
+   page for the pad position on your version.
+2. Drive D10 HIGH. This also powers the HAT sensors.
+3. Read D1/A1 (GPIO1) and multiply the reading by 2.
+4. Drive D10 LOW.
+
+Seeed lists battery monitoring on the XIAO ESP32-C6 as supported, with the
+extra wiring above. Check the reading against a multimeter before you trust
+it.
+
+Do not use D0 (GPIO0) for anything else. The HAT clock's interrupt pin is
+connected to it.
+
+### Without the Logger HAT
 
 Wire a voltage divider from the battery positive to A0 (GPIO0):
 

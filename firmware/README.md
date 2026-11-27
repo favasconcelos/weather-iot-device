@@ -9,7 +9,7 @@ Two firmware stages:
 
 ## Bench firmware
 
-Arduino sketch for the XIAO ESP32-C6 and the SHT40 breakout.
+Arduino sketch for the XIAO ESP32-C6 and the XIAO Logger HAT (SHT40).
 It creates a Matter temperature sensor and a Matter humidity sensor, then
 updates them every 5 seconds.
 
@@ -23,7 +23,8 @@ the plan is in [the final firmware doc](../docs/06-final-firmware.md).
 
 ## Status
 
-The bench sketch is a first draft. It compiles with the ESP32 Arduino core
-3.3.12 and the **Huge APP (3MB No OTA/1MB SPIFFS)** partition scheme. It will
-be tested with the real hardware when the parts arrive. If the Arduino Matter
+The bench sketch is a first draft. The Logger HAT version compiles with the
+ESP32 Arduino core 4.0.0 and the **Huge APP (3MB No OTA/1MB SPIFFS)**
+partition scheme, using 88% of the app partition. It has not run on hardware
+yet; it will be tested when the parts arrive. If the Arduino Matter
 API changes, the sketch may need a small adjustment.

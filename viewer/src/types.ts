@@ -3,9 +3,11 @@ import type { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
 export type Mode = 'assembled' | 'exploded' | 'wiring' | 'print';
 
+export type Theme = 'dark' | 'light';
+
 export type PartId =
   | 'xiao'
-  | 'sht40'
+  | 'hat'
   | 'battery'
   | 'box'
   | 'lid'
@@ -32,16 +34,7 @@ export interface Connection {
   detail: string;
   color: number;
   css: string;
-  group:
-    | 'sensor-3v3'
-    | 'sensor-gnd'
-    | 'sensor-sda'
-    | 'sensor-scl'
-    | 'battery-positive'
-    | 'battery-negative'
-    | 'led-signal'
-    | 'reed-signal'
-    | 'battery-divider';
+  group: 'hat' | 'battery' | 'led' | 'reed' | 'divider';
   partIds: PartId[];
 }
 

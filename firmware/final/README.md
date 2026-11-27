@@ -39,6 +39,6 @@ docker run --rm -it \
   idf.py set-target esp32c6 build
 ```
 
-The final device talks to Home Assistant through the **ZBT-2 + OTBR**
+The final device talks to Home Assistant through the planned **ZBT-2 + OTBR**
 border router. The setup is in
 [docs/14-thread-border-router.md](../../docs/14-thread-border-router.md).

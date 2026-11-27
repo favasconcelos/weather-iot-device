@@ -2,7 +2,7 @@
 
 ## Goal
 
-A small outdoor sensor on the office window that measures temperature and
+A small sensor outside the office window that measures temperature and
 humidity, reports to Home Assistant via Matter every 1-2 hours, and runs for
 at least 6 months on one battery charge (ideally 12+).
 
@@ -55,11 +55,12 @@ The project is "done" when:
 - **Phone:** Android. A homemade Matter device may need a Google developer
   console step or a borrowed iPhone/iPad for the first pairing.
 - **Home Assistant:** Docker container on a Raspberry Pi, with a separate
-  `matter-server` container. Today both use a macvlan network. Thread needs a
-  border router.
-- **Thread border router:** Home Assistant Connect ZBT-2 plus a standalone
-  OpenThread Border Router container on the Pi. The ZBT-1 is discontinued;
-  a used one still works. A used Nest Hub 2 is the fallback.
+  `matter-server` container on a macvlan network. This works for Wi-Fi
+  Matter devices today. Thread needs a border router.
+- **No Thread border router yet.** This is the main blocker. Preferred:
+  Home Assistant Connect ZBT-2 + standalone OTBR container on the Pi; a used
+  Google Nest Hub (2nd gen) is the easier fallback. See
+  [the border router guide](14-thread-border-router.md).
 - **Network:** Thread is IPv6-only. The target is either host networking for
   HA, `matter-server`, and OTBR, or all three on macvlan with IPv6 and router
   advertisements configured. Do not mix the two.
@@ -67,19 +68,19 @@ The project is "done" when:
   brought indoors to charge.
 - **Skills:** comfortable with a soldering iron, but not an electronics expert.
 - **3D printing:** available through friends, not at home.
-- **Budget:** roughly €140-190 for parts, excluding tools. The ZBT-2 is about
-  €45.
+- **Budget:** roughly €100-150 for parts, excluding tools. A border router
+  adds €40-60.
 
 ## Main risks
 
 | Risk | Impact | Mitigation |
 |---|---|---|
+| No Thread border router | Cannot use the final Thread firmware | Buy a used Google Nest Hub 2, or set up ZBT-2 + OTBR |
 | OTBR/IPv6 setup is fiddly in Docker | Cannot commission the Thread sensor | Follow the border router guide; back up; use one network model for HA, matter-server, and OTBR |
 | Android refuses homemade Matter device | Cannot commission | Google developer console, or borrow an iPhone/iPad |
 | Battery life too short | Fails the 6-month target | Use ICD sleep, 1-2 hour reports, power-gate the sensor, measure and tune |
 | Window heats the sensor | Temperature reads too high | Radiation shield, white box, sensor away from glass and wall, compare with a shaded reference |
 | Sun heats the sensor | Temperature reads too high | Printed radiation shield, white box, sensor away from electronics |
 | Rain/condensation | Electronics corrode | IP65 box, Gore vent, desiccant, conformal coating, drip loop |
-| Weak Thread signal | Device drops offline | Move the border router, add a mains Thread router, external antenna |
-| Self-heating from XIAO/battery | Temperature offset | Keep sensor at the bottom, air gap, compare with reference |
-| Docker network change breaks the Anker device | Existing Matter device goes offline | Back up `matter-server`; change one thing at a time; verify the Anker device after the change |
+| Weak Thread signal | Device drops offline | Move border router, add a mains Thread router, external antenna |
+| Self-heating from XIAO/battery | Temperature offset | Keep sensor at the bottom, air gap, compare with reference. The Logger HAT sits on the XIAO, so measure the offset in the bench test and move the sensor off the board if needed |

@@ -1,7 +1,7 @@
 # Bench test, step by step
 
-**Goal:** see real temperature and humidity from the SHT40 in Home Assistant,
-using the XIAO ESP32-C6 over Wi-Fi and USB power.
+**Goal:** see real temperature and humidity from the SHT40 on the Logger HAT
+in Home Assistant, using the XIAO ESP32-C6 over Wi-Fi and USB power.
 
 This is the first "it works" milestone. No battery, no Thread, no box yet.
 
@@ -9,48 +9,73 @@ This is the first "it works" milestone. No battery, no Thread, no box yet.
 
 ## 1. What you need
 
-- Seeed XIAO ESP32-C6
-- SHT40 breakout
-- Breadboard
-- 4 jumper wires (male-female)
+- Seeed XIAO ESP32-C6 with pre-soldered headers (Seeed SKU 102010636)
+- Seeed XIAO Logger HAT (Seeed SKU 114993446)
+- Soldering iron, solder and flux (the HAT is soldered onto the XIAO)
 - USB-C data cable
+- A room thermometer to compare against (optional, but useful)
 - Arduino IDE on your computer
 - Home Assistant Companion app on your Android phone
 - Your 2.4 GHz Wi-Fi name and password
 
 ---
 
-## 2. Wire the sensor
+## 2. Attach the Logger HAT
 
-The XIAO uses 3.3 V logic. Power the SHT40 breakout from **3V3**, not 5V.
+The Logger HAT is a thumb-sized board with the same outline as the XIAO. It
+sits on top of the XIAO, so there is nothing to wire. On the HAT:
 
-| XIAO ESP32-C6 | SHT40 breakout |
+| Chip | What it does | I2C address |
+|---|---|---|
+| SHT40 | Temperature and humidity (the sensor we use) | `0x44` |
+| BH1750 | Ambient light | `0x23` |
+| PCF8563 | Real-time clock | `0x51` |
+
+It also has I2C pull-up resistors and a battery voltage divider.
+
+The pins it uses on the XIAO ESP32-C6:
+
+| XIAO ESP32-C6 pin | Used for |
 |---|---|
-| 3V3 | VIN or VCC |
-| GND | GND |
+| 3V3, GND | Power (the HAT works from 2.4 to 3.6 V; never 5 V) |
 | D4 (GPIO22) | SDA |
 | D5 (GPIO23) | SCL |
+| D10 (GPIO18) | Switches the power of the sensors and the battery divider |
+| D1 (GPIO1) | Battery voltage (not used in the bench test) |
+| D0 (GPIO0) | Clock alarm interrupt (not used in the bench test) |
 
 ```
-XIAO ESP32-C6                 SHT40 breakout
-+-----------+                 +-------------+
-|      3V3  |-----------------| VIN         |
-|      GND  |-----------------| GND         |
-| D4 (SDA)  |-----------------| SDA         |
-| D5 (SCL)  |-----------------| SCL         |
-+-----------+                 +-------------+
++-------------------------+
+|  XIAO Logger HAT        |   SHT40 + BH1750 + PCF8563
+|  (on top)               |
++-------------------------+
+|  XIAO ESP32-C6          |   USB-C to the computer
+|  (pre-soldered headers) |
++-------------------------+
 ```
+
+**Assemble it:**
+
+1. Look at the XIAO headers. Make sure no two pins are bridged with solder.
+2. Place the HAT on the XIAO so each pad sits over the matching XIAO pin
+   (3V3 over 3V3, D4 over D4, and so on).
+3. Tack two opposite corners and check the alignment before soldering the
+   rest. The pads are small; use a fine tip and little solder.
+4. Check the joints for bridges between neighbouring pins.
+
+Seeed's product page has pictures of the assembled stack:
+[XIAO Logger HAT](https://www.seeedstudio.com/XIAO-LOG-p-6341.html).
 
 **Before powering up:**
 
-- Check that 3V3 goes to VIN, not to GND.
-- Check that GND goes to GND.
-- Check that SDA goes to SDA and SCL to SCL.
-- The Adafruit breakout has pull-up resistors and a level shifter, so no
-  extra resistors are needed for the bench test.
+- Do not connect a battery. The bench test runs from USB. Leave the HAT's
+  battery pad empty.
+- With a multimeter in continuity mode, check that 3V3 and GND are not
+  connected.
+- Check there is no solder bridge between D4 and D5.
 
-If you use a bare SHT40 module instead of a breakout, add 4.7 kΩ pull-ups
-from SDA and SCL to 3.3 V, unless the module already has them.
+The Logger HAT is soldered, so for the bench test you cannot move the sensor
+away from the XIAO. That matters for the readings; see step 7.
 
 ---
 
@@ -83,7 +108,8 @@ If the board is not detected:
 ## 4. Install the sensor library
 
 1. Open **Tools > Manage Libraries**.
-2. Search for `Adafruit SHT4x` and install it.
+2. Search for `Adafruit SHT4x` and install it. The Logger HAT carries a
+   standard SHT40 at `0x44`, so this library works unchanged.
 3. Install `Adafruit Unified Sensor` if the Library Manager asks for it.
 4. Install `Adafruit BusIO` if asked.
 
@@ -95,6 +121,7 @@ If the board is not detected:
 2. Check the top of the sketch:
    - Wi-Fi is selected (the sketch calls `Matter.selectNetwork(MATTER_NETWORK_WIFI)`).
    - I2C uses GPIO22 (SDA) and GPIO23 (SCL).
+   - D10 (GPIO18) is driven HIGH to power the HAT sensors.
 3. Click **Upload**.
 4. Open **Tools > Serial Monitor** at **115200 baud**.
 
@@ -108,9 +135,10 @@ QR code URL: https://project-chip.github.io/connectedhomeip/qrcode.html?data=...
 Temperature: 21.34 C  Humidity: 48.72 %
 ```
 
-If you see `SHT40 not found`, stop and check the wiring. Run
-`firmware/tools/i2c-scan/i2c-scan.ino` to see which address is detected. The SHT40
-should appear at `0x44`.
+If you see `SHT40 not found`, stop and check the HAT solder joints. Run
+`firmware/tools/i2c-scan/i2c-scan.ino` to see which addresses are detected.
+With the Logger HAT you should see `0x23` (BH1750), `0x44` (SHT40) and
+`0x51` (PCF8563 clock).
 
 ---
 
@@ -175,13 +203,19 @@ In Home Assistant:
 Compare the readings with a normal room thermometer. Small differences are
 normal. Write down the offset in the journey log.
 
-The serial monitor should print a new reading every 5 seconds. That is only
-for the bench. The final firmware reports every 1-2 hours to save battery.
+**Expect the temperature to read high.** The SHT40 is on a board pressed
+against the XIAO, which runs warm while it holds a Wi-Fi connection. Note
+the offset after the board has been on for 10-15 minutes. This is the first
+real measurement for the sensor placement decision in the window build; see
+[Enclosure](09-enclosure.md#vent-and-sensor-placement).
+
+The serial monitor should print a new reading every 5 seconds.
 
 ---
 
 ## 8. What success looks like
 
+- [ ] The I2C scan lists `0x23`, `0x44` and `0x51`.
 - [ ] The serial monitor says `SHT40 found`.
 - [ ] The board connects to Wi-Fi.
 - [ ] Home Assistant shows the device.
@@ -197,24 +231,45 @@ for the bench. The final firmware reports every 1-2 hours to save battery.
 |---|---|---|
 | No serial port | Charge-only USB cable, or board not in bootloader | Use a data cable; hold BOOT while plugging in |
 | Upload fails | Wrong board or port | Select `XIAO_ESP32C6` and the correct port |
-| `SHT40 not found` | Wiring or power | Check 3V3, GND, SDA, SCL; run the I2C scanner |
+| `SHT40 not found` | HAT solder joints, or D10 not driven | Reflow the HAT pads; run the I2C scanner; check the sketch sets D10 HIGH |
 | Temperature is always 0 | Sensor not read | Check the I2C address; check the sketch |
+| Temperature reads high | The HAT is warmed by the XIAO | Normal for a stacked board; write down the offset and see [Troubleshooting](12-troubleshooting.md) |
 | Pairing fails | Phone too far, wrong Wi-Fi, Android refuses | Move closer; use 2.4 GHz; use the Android workaround |
 | Device not in HA | Matter Server did not see it | Check `docker logs matter-server --tail 100` on the Pi |
-| Device reboots repeatedly | `matterWaitUntilReady` timeout | The sketch uses `matterWaitUntilReady(0)` to wait forever; check the serial log |
+| Device reboots every 5 minutes | `matterWaitUntilReady` timeout | The sketch uses `matterWaitUntilReady(0)` to wait forever; check the serial log |
 
 For more, see [Troubleshooting](12-troubleshooting.md).
 
 ---
 
-## 10. Next step
+## 10. Play around (optional)
+
+This phase is for learning the parts. Good first experiments:
+
+1. **Self-heating:** log the SHT40 temperature against a room thermometer for
+   an hour. Does the offset shrink if you stop Matter/Wi-Fi traffic?
+2. **Light:** read the BH1750 at `0x23` with the `BH1750` library from the
+   Library Manager. Cover it with a hand, then shine a phone torch on it.
+3. **Clock:** read the PCF8563 at `0x51`. It keeps time with almost no
+   current, which helps the final low-power firmware.
+4. **Battery divider:** later, with a protected cell wired to the HAT's
+   battery pad (see [Battery](08-battery.md#battery-voltage-measurement)),
+   drive D10 HIGH and read the voltage on D1.
+
+None of these is needed for the project to move on.
+
+---
+
+## 11. Next step
 
 Once the bench test works:
 
-1. Order the outdoor kit (see the shopping list).
-2. Order the ZBT-2 and set up the OTBR container
-   ([border router guide](14-thread-border-router.md)).
-3. We build the low-power ESP-IDF firmware and measure the battery draw.
+1. Decide where the sensor lives in the window build. If the offset in step 7
+   is too large, add a separate sensor on a short cable (for example an
+   SHT45 breakout); see the shopping list.
+2. Order the window kit (see the shopping list).
+3. Order or borrow the Thread border router.
+4. We build the low-power ESP-IDF firmware and measure the battery draw.
 
 Do not put the bench build in a box yet. Finish the firmware and the
 battery test first.

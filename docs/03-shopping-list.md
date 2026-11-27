@@ -7,49 +7,62 @@ possible".
 ## How to read this list
 
 - **Phase 1** is everything you need for the bench test. Order this first.
-- **Phase 2** is the outdoor build. Order it after the bench test works.
-- **ZBT-2 border router** is the one extra device the project needs.
+- **Phase 2** is the window build. Order it after the bench test works.
+- **Thread border router** is the one extra device the project needs. It is
+  not bought yet.
 - **Do not buy yet** is listed at the end. It avoids wasting money on
   parts we may not need.
 
 ---
 
-## Phase 1 — Bench kit (order now)
+## Phase 1 — Bench kit (ordered)
+
+Ordered from [Seeed Studio](https://www.seeedstudio.com/) on 2026-11-25:
+
+| Part | Seeed SKU | Price | Why |
+|---|---|---|---|
+| Seeed XIAO ESP32-C6, pre-soldered | 102010636 | €5.99 | The tiny computer; headers already soldered |
+| Seeed XIAO Logger HAT | 114993446 | €7.99 | SHT40 temperature + humidity, BH1750 light, PCF8563 clock, battery divider |
+
+Parts total €13.98, plus delivery and any import charges (not recorded
+yet; add them here when the parcel arrives).
+
+Still needed for the bench test:
 
 | Part | Why | Approx. price | Where to look |
 |---|---|---|---|
-| Seeed XIAO ESP32-C6 | The tiny computer | €8-12 | [Seeed Studio](https://www.seeedstudio.com/Seeed-Studio-XIAO-ESP32C6-p-5884.html), Amazon.es, Mouser.es, Digi-Key |
-| SHT40 breakout | Temperature + humidity sensor | €6-10 | Adafruit [#4885](https://www.adafruit.com/product/4885), Mouser.es, Digi-Key, Amazon.es |
-| Breadboard, 400 points | Temporary wiring | €4-6 | Amazon.es, PCComponentes, local electronics shop |
-| Jumper wires, male-female | Connect the board to the sensor | €3-5 | Amazon.es, PCComponentes |
-| USB-C **data** cable | Power and programming | €5-8 | Amazon.es, PCComponentes |
-| Male pin headers | Solder to the XIAO so it fits the breadboard | €2 | Amazon.es, local electronics shop |
-| Multimeter (optional but useful) | Check voltage, current, continuity | €15-25 | Amazon.es, Leroy Merlin, PCComponentes |
+| USB-C **data** cable | Power and programming | €5-8 (or use one you own) | Amazon.es, PCComponentes |
+| Soldering iron, solder, flux | The HAT is soldered onto the XIAO | You may already own these | See [Tools and safety](04-tools-and-safety.md) |
+| Room thermometer (optional) | Compare against the SHT40 | €3-6 | Amazon.es, local shop |
+| Multimeter (optional but useful) | Check continuity and voltage | €15-25 | Amazon.es, Leroy Merlin, PCComponentes |
+| Breadboard + jumper wires (optional) | Only if you want to wire extra parts later | €7-12 | Amazon.es, PCComponentes |
 
 **Search terms for Amazon.es**
 
-- `Seeed XIAO ESP32C6`
-- `Adafruit SHT40` or `SHT40 breakout`
-- `protoboard 400 puntos`
-- `cables dupont macho hembra`
 - `cable USB-C datos`
-- `tira de pines macho 2.54mm`
+- `termómetro de interior`
 - `multimetro digital`
+- `protoboard 400 puntos` and `cables dupont macho hembra` (optional)
 
 **Notes**
 
-- The XIAO usually ships without pin headers. You need to solder them.
-- The Adafruit SHT40 breakout has a 3.3 V regulator and level shifter.
-  That is fine for the bench. For the final battery build it wastes a little
-  standby current; we may power it from a GPIO or use a bare sensor later.
-- Buy two SHT40 breakouts if the shipping is high. A spare is useful while
-  debugging.
-- If you buy from Mouser or Digi-Key, combine the XIAO, sensor, headers,
-  resistors, and LED in one order to make the shipping worth it.
+- The XIAO is the pre-soldered version, so you do not need separate pin
+  headers.
+- The Logger HAT is not a breakout on wires. It is soldered on the XIAO, so
+  the sensor ends up against the board that warms it. Plan to measure the
+  offset in the bench test; see [Bench test](05-bench-test.md).
+- The HAT runs from the XIAO's 3.3 V pin, so it needs no regulator or level
+  shifter. Its sensors are switched from pin D10, so they can be off in deep
+  sleep.
+- Seeed ships from China, so expect a few weeks and possible customs
+  handling; see the notes at the end of this page.
+- Alternatives that were checked: a Mouser basket with the same XIAO had a
+  €25.00 FedEx delivery charge, and genuine XIAO and Adafruit SHT45 boards on
+  Amazon.es cost two to three times as much as Mouser's parts price.
 
 ---
 
-## Phase 2 — Outdoor kit (order after the bench test)
+## Phase 2 — Window kit (order after the bench test)
 
 | Part | Why | Approx. price | Where to look |
 |---|---|---|---|
@@ -106,45 +119,41 @@ possible".
 
 ## Thread border router
 
-**Chosen: Home Assistant Connect ZBT-2 + Docker OTBR.** One radio, one extra
-purchase, fully local. The ZBT-1 is discontinued; buy a used one only if it
-is cheap and you do not mind the older radio.
+You need exactly one of these options.
 
 | Option | Cost | Effort | Notes |
 |---|---|---|---|
-| **Home Assistant Connect ZBT-2 + Docker OTBR** | **~€45** | **Medium** | **Chosen.** Better antenna than the ZBT-1. Your HA runs in Docker, so you run a standalone OTBR container. Budget an evening. |
-| Used Home Assistant Connect ZBT-1 + Docker OTBR | €20-35 | Medium | Still works and gets updates, but it is out of production. Same OTBR setup. |
-| Used Google Nest Hub (2nd gen) | €40-60 | Low | Easiest on the border-router side, but the Thread network is Google-owned and you must sync credentials. Good fallback. |
-| New Google Nest Hub (2nd gen) | €70-100 | Low | MediaMarkt, Amazon.es. More expensive than the ZBT-2. |
+| Home Assistant Connect ZBT-2 + standalone OTBR | ~€45 | Medium-high | Preferred path; the full setup is in [the border router guide](14-thread-border-router.md). Not ordered yet. |
+| Used Google Nest Hub (2nd gen) | €40-60 | Low | Easiest fallback for Android. Check Wallapop, Milanuncios, Cash Converters, Facebook Marketplace. |
+| New Google Nest Hub (2nd gen) | €70-100 | Low | MediaMarkt, Amazon.es. |
 | Google TV Streamer | €100-120 | Low | Newer, more expensive, also has Thread. |
+| Home Assistant Connect ZBT-1 + Docker OTBR | €30 | Medium-high | Cheaper, but your HA runs in Docker with a custom network. Budget an evening for debugging. |
 | Borrow an Apple TV 4K / HomePod mini | €0 | Low | Only if you can borrow one. It creates an Apple Thread network. |
 
-**Why the ZBT-2?** It is the current Nabu Casa radio, it keeps the Thread
-network under your control, and it is cheaper than a Nest Hub. The catch is
-that it is only a radio: you need the OpenThread Border Router container on
-the Pi. See [the border router guide](14-thread-border-router.md).
-
-The ZBT-2 includes a USB-C cable. Use it, and keep the radio away from USB 3
-ports and metal. If the Pi is in a cabinet, a short USB extension cable helps.
-
-**If you choose a Nest Hub instead:** set it up in the Google Home app on the
-same Wi-Fi network as Home Assistant, then use the Android Companion app to
-send the Thread credentials to Home Assistant. See
+**Important:** the Nest Hub must be set up in the Google Home app on the
+same Wi-Fi network as Home Assistant. Then the Home Assistant Companion app
+can send the Thread credentials to Home Assistant. See
 [Home Assistant Thread docs](https://www.home-assistant.io/integrations/thread/).
+
+**Why a Nest Hub 2 and not a random smart speaker?**
+The Nest Hub (2nd gen) is on Home Assistant's list of known-working Thread
+border routers. It is common on the used market and easy to set up.
 
 ---
 
 ## Do not buy yet
 
 - Custom PCB (JLCPCB/PCBWay). Only after version 1 works.
-- Bare SHT40 sensor. Hard to hand-solder; use the breakout for now. Revisit it
-  if the breakout's regulator wastes too much standby current.
+- A separate SHT45 breakout (Adafruit #5665, or #6174 with a PTFE membrane).
+  Decide after the bench test: if the Logger HAT reads too warm, a
+  separate sensor on a short cable is the fix. It is the same I2C driver
+  (`0x44`) and about €12-23 depending on where you buy it.
+- Bare SHT40 sensor. Hard to hand-solder; the Logger HAT already has one.
 - Expensive power profiler (Joulescope, Otii, Nordic PPK2). We can estimate
   with a multimeter first.
 - 3D printer. Use your friend's printer.
-- Solar panel. The 1-2 hour interval does not need one.
+- Solar panel. Not needed for the first version.
 - Fancy enclosure. The IP65 box + printed shield is enough.
-- ZBT-1 at a collector price. The ZBT-2 is the current part.
 
 ---
 
@@ -152,10 +161,10 @@ send the Thread credentials to Home Assistant. See
 
 | Phase | Approx. cost |
 |---|---|
-| Bench kit | €30-50 |
-| Outdoor kit | €65-90 |
-| ZBT-2 border router | €45 |
-| **Total** | **€140-190** |
+| Bench kit (ordered) | €13.98 parts plus delivery, and a cable if you need one |
+| Window kit | €65-90 |
+| Thread border router | €0-60 |
+| **Total** | **€79-164** plus delivery and a USB-C cable if needed |
 
 Tools (soldering iron, multimeter, etc.) are extra if you do not already
 own them.
@@ -168,19 +177,19 @@ own them.
   the IP65 box, cable gland, silicone, screws, and fuse holder. Check stock
   online before driving.
 - **Electronics:** Mouser.es and Digi-Key have fast shipping but charge
-  shipping unless the order is large. Combine parts. Amazon.es is faster for
-  generic modules but quality varies.
-- **ZBT-2:** buy from the Nabu Casa store, Seeed Studio, or an EU reseller.
-  Avoid marketplace listings with unknown firmware. The ZBT-1 is
-  discontinued, so only buy one used if it is cheap.
+  shipping unless the order is large (Mouser's free-shipping threshold is
+  about €75; a small basket was quoted €25.00 for FedEx). Combine parts. Amazon.es
+  is faster for generic modules but quality varies, and genuine Seeed and
+  Adafruit boards cost two to three times as much.
 - **Used devices:** Wallapop and Milanuncios are the best places for a used
-  Nest Hub 2 if you choose the fallback. Ask for the original power adapter.
+  Nest Hub 2. Ask for the original power adapter.
 - **18650 cells:** NKON (Netherlands) is reliable and ships to Spain. A local
   vape shop may also have protected cells, but check the brand and condition.
 - **Import:** Seeed Studio ships from China. Expect 2-4 weeks and possible
-  customs handling. If you want it faster, check Mouser.es or Amazon.es.
+  customs handling. The bench kit was ordered from Seeed directly. Mouser
+  ships Seeed parts faster, but with a delivery fee.
 - **Summer heat:** Zaragoza can exceed 40 °C. The white box and sun shield
-  are not optional. Park the device in shade if possible, but the shield
-  must still allow airflow.
+  are not optional. Shade the window if possible, but the shield must still
+  allow airflow.
 - **Winter cold:** Zaragoza can go below 0 °C. The sensor is fine; the
   Li-ion battery discharges below 0 °C but must be charged indoors.
